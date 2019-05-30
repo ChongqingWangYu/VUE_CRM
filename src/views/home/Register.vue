@@ -4,7 +4,7 @@
              label-position="left">
 
       <div class="title-container">
-        <h3 class="title">用户注册</h3>
+        <h3 class="title">注册</h3>
       </div>
 
       <el-form-item prop="username">
@@ -80,7 +80,7 @@
   import {validUsername} from '@/utils/validate'
 
   export default {
-    name: 'Register',
+    name: 'Login',
     data() {
       const validateUsername = (rule, value, callback) => {
         if (value === '') {
@@ -111,9 +111,9 @@
       };
       return {
         registerForm: {
-          username: '123123',
-          password: '123123',
-          checkPass: '123123'
+          username: '',
+          password: '',
+          checkPass: ''
         },
         registerRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],
@@ -148,21 +148,7 @@
         var user = {
           userName: this.registerForm.username,
           password: this.registerForm.password
-        };
-        this.$refs.registerForm.validate(valid => {
-          if (valid) {
-            this.loading = true;
-            this.$store.dispatch('user/register', user).then(() => {
-              this.$router.push({path: this.redirect || '/'});
-              this.loading = false
-            }).catch(() => {
-              this.loading = false
-            })
-          } else {
-            console.log('error submit!!');
-            return false
-          }
-        })
+        }
       },
       reverseBack() {
         this.$router.push('/login');
