@@ -8,9 +8,11 @@ export function login(data) {
   })
 }
 
-export function register(data) {
+export function registerUser(data) {
+  console.log('export function registerUser(data)');
   return request({
-    url: '/user/register',
+    baseURL:'http://127.0.0.1:8080',
+    url: '/user/registerUser',
     method: 'post',
     data
   })

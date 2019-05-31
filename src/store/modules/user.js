@@ -1,7 +1,7 @@
-import { login, logout, getInfo ,register} from '@/api/user'
+import { login, logout, getInfo ,registerUser} from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-
+import qs from 'qs'
 const state = {
   token: getToken(),
   name: '',
@@ -36,9 +36,11 @@ const actions = {
     })
   },
   // user register
-  register({ commit }, user) {
+  registerUser({ commit }, user) {
+    user=qs.stringify(user);
+    console.log('registerUser({ commit }, user)');
     return new Promise((resolve, reject) => {
-      register(user).then(response => {
+      registerUser(user).then(response => {
         const { data } = response;
         console.log('注册成功');
       }).catch(error => {
