@@ -9,7 +9,6 @@ export function login(data) {
 }
 
 export function registerUser(data) {
-  console.log('export function registerUser(data)');
   return request({
     baseURL:'http://127.0.0.1:8080',
     url: '/user/registerUser',

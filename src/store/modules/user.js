@@ -38,11 +38,11 @@ const actions = {
   // user register
   registerUser({ commit }, user) {
     user=qs.stringify(user);
-    console.log('registerUser({ commit }, user)');
     return new Promise((resolve, reject) => {
       registerUser(user).then(response => {
-        const { data } = response;
-        console.log('注册成功');
+        console.log(response);
+        // const { data } = response;
+        // resolve(data)
       }).catch(error => {
         reject(error)
       })
