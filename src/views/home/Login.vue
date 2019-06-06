@@ -13,7 +13,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="loginForm.userName"
           placeholder="用户名"
           name="username"
           type="text"
@@ -63,7 +63,8 @@
     name: 'Login',
     data() {
       const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
+        // if (!validUsername(value)) {
+        if (value === '') {
           callback(new Error('请输入用户名'))
         } else {
           callback()
@@ -78,11 +79,11 @@
       }
       return {
         loginForm: {
-          username: 'admin',
-          password: '111111'
+          userName: '123123',
+          password: '123123'
         },
         loginRules: {
-          username: [{required: true, trigger: 'blur', validator: validateUsername}],
+          userName: [{required: true, trigger: 'blur', validator: validateUsername}],
           password: [{required: true, trigger: 'blur', validator: validatePassword}]
         },
         loading: false,

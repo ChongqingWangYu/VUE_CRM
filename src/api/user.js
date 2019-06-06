@@ -1,14 +1,14 @@
 import request from '@/utils/request'
-
 export function login(data) {
   return request({
-    url: '/user/login',
+    baseURL:'http://127.0.0.1:8080',
+    url: '/user/loginUser',
     method: 'post',
     data
   })
 }
 
-export function registerUser(data) {
+export function register(data) {
   return request({
     baseURL:'http://127.0.0.1:8080',
     url: '/user/registerUser',
