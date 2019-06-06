@@ -13,7 +13,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="registerForm.username"
+          v-model="registerForm.userName"
           placeholder="用户名"
           name="username"
           type="text"
@@ -111,12 +111,12 @@
       };
       return {
         registerForm: {
-          username: '123123',
+          userName: '123123',
           password: '123123',
           checkPass: '123123'
         },
         registerRules: {
-          username: [{required: true, trigger: 'blur', validator: validateUsername}],
+          userName: [{required: true, trigger: 'blur', validator: validateUsername}],
           password: [{required: true, trigger: 'blur', validator: validatePassword}],
           checkPass: [{required: true, trigger: 'blur', validator: validateCheckPass}],
         },
@@ -146,13 +146,13 @@
       },
       registerSubmit() {
         var user ={
-          userName:this.registerForm.username,
+          userName:this.registerForm.userName,
           password:this.registerForm.password
         };
         this.$refs.registerForm.validate(valid => {
           if (valid) {
             this.loading = true;
-            this.$store.dispatch('user/registerUser', user).then(() => {
+            this.$store.dispatch('user/register', user).then(() => {
               this.$router.push({path: this.redirect || '/'});
               this.loading = false
             }).catch(() => {

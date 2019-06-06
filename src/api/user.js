@@ -2,7 +2,7 @@ import request from '@/utils/request'
 export function login(data) {
   return request({
     baseURL:'http://127.0.0.1:8080',
-    url: '/user/loginUser',
+    url: '/user/login',
     method: 'post',
     data
   })
@@ -11,7 +11,7 @@ export function login(data) {
 export function register(data) {
   return request({
     baseURL:'http://127.0.0.1:8080',
-    url: '/user/registerUser',
+    url: '/user/register',
     method: 'post',
     data
   })
