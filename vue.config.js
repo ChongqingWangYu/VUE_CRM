@@ -42,7 +42,7 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      },
+      }
     },
     after: require('./mock/mock-server.js')
   },
