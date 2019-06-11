@@ -28,10 +28,12 @@ const actions = {
     user=qs.stringify(user);
     return new Promise((resolve, reject) => {
       login(user).then(response => {
+        console.log(response);
         commit('SET_TOKEN', response.token);
         setToken(response.token);
         resolve();
       }).catch(error => {
+        console.log(error);
         reject(error);
       })
     })
@@ -42,7 +44,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       register(user).then(response => {
         console.log(response);
-        console.log(response.message);
         Msg.success(response.message);
         resolve();
       }).catch(error => {
@@ -53,19 +54,18 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
+        console.log(response);
         const { data } = response;
-
         if (!data) {
           reject('Verification failed, please Login again.');
         }
-
         const { name, avatar } = data;
-
         commit('SET_NAME', name);
         commit('SET_AVATAR', avatar);
         resolve(data);
       }).catch(error => {
+        console.log(error);
         reject(error);
       })
     })
@@ -74,12 +74,14 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout(state.token).then((response) => {
         commit('SET_TOKEN', '');
         removeToken();
         resetRouter();
+        Msg.success(response.message);
         resolve();
       }).catch(error => {
+        console.log(error);
         reject(error);
       })
     })
