@@ -44,8 +44,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       register(user).then(response => {
         console.log(response);
-        Msg.success(response.message);
-        resolve();
+        if(response.message=="注册成功"){
+          Msg.success(response.message);
+          resolve();
+        }else {
+          Msg.error(response.message);
+        }
       }).catch(error => {
         reject(error);
       })
