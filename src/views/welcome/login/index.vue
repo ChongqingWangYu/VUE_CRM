@@ -1,10 +1,10 @@
 <template>
   <div class="login-container">
-    <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on"
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
              label-position="left">
 
       <div class="title-container">
-        <h3 class="title">用户注册</h3>
+        <h3 class="title">系统登录</h3>
       </div>
 
       <el-form-item prop="username">
@@ -13,7 +13,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="registerForm.userName"
+          v-model="loginForm.userName"
           placeholder="用户名"
           name="username"
           type="text"
@@ -29,7 +29,7 @@
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="registerForm.password"
+          v-model="loginForm.password"
           :type="passwordType"
           placeholder="密码"
           name="password"
@@ -42,32 +42,12 @@
         </span>
       </el-form-item>
 
-      <el-form-item prop="checkPass">
-        <span class="svg-container">
-          <svg-icon icon-class="password"/>
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="checkPass"
-          v-model="registerForm.checkPass"
-          :type="passwordType"
-          placeholder="确认密码"
-          name="checkPass"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
-        </span>
-      </el-form-item>
-
       <el-row>
         <el-button :loading="loading" type="primary" style="width:45%;margin-left:15px;margin-bottom:30px;"
-                   @click="registerSubmit">提交
+                   @click.native.prevent="loginSubmit">确认
         </el-button>
-        <el-button type="info" style="width:45%;margin-bottom:30px;"
-                   @click="reverseBack">返回
+        <el-button type="success" style="width:45%;margin-bottom:30px;"
+                   @click.native.prevent="registerSkip">注册
         </el-button>
       </el-row>
 
@@ -80,16 +60,12 @@
   import {validUsername} from '@/utils/validate'
 
   export default {
-    name: 'Register',
     data() {
       const validateUsername = (rule, value, callback) => {
+        // if (!validUsername(value)) {
         if (value === '') {
           callback(new Error('请输入用户名'))
-        }
-        else if (value.length < 6) {
-          callback(new Error('用户名必须大于6位'))
-        }
-        else {
+        } else {
           callback()
         }
       };
@@ -100,25 +76,14 @@
           callback()
         }
       };
-      const validateCheckPass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请确认密码'));
-        } else if (value !== this.registerForm.password) {
-          callback(new Error('两次输入密码不匹配'));
-        } else {
-          callback();
-        }
-      };
       return {
-        registerForm: {
-          userName: '123123',
-          password: '123123',
-          checkPass: '123123'
+        loginForm: {
+          userName: 'admin001',
+          password: 'admin001'
         },
-        registerRules: {
+        loginRules: {
           userName: [{required: true, trigger: 'blur', validator: validateUsername}],
-          password: [{required: true, trigger: 'blur', validator: validatePassword}],
-          checkPass: [{required: true, trigger: 'blur', validator: validateCheckPass}],
+          password: [{required: true, trigger: 'blur', validator: validatePassword}]
         },
         loading: false,
         passwordType: 'password',
@@ -144,18 +109,17 @@
           this.$refs.password.focus()
         })
       },
-      registerSubmit() {
-        var user ={
-          userName:this.registerForm.userName,
-          password:this.registerForm.password
-        };
-        this.$refs.registerForm.validate(valid => {
+      registerSkip() {
+        this.$router.push('/register');
+      },
+      loginSubmit() {
+        this.$refs.loginForm.validate(valid => {
           if (valid) {
             this.loading = true;
-            this.$store.dispatch('user/register', user).then(() => {
+            this.$store.dispatch('user/login', this.loginForm).then(() => {
               this.$router.push({path: this.redirect || '/'});
               this.loading = false
-            }).catch(() => {
+            }).catch((error) => {
               this.loading = false
             })
           } else {
@@ -163,9 +127,6 @@
             return false
           }
         })
-      },
-      reverseBack() {
-        this.$router.push('/login');
       }
     }
   }
@@ -281,3 +242,4 @@
     }
   }
 </style>
+
