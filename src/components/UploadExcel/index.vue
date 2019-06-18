@@ -33,6 +33,10 @@ export default {
       this.excelData.results = results
       this.onSuccess && this.onSuccess(this.excelData)
     },
+    uploadOnSuccess(){
+      this.onSuccess()
+    }
+    ,
     handleDrop(e) {
       e.stopPropagation()
       e.preventDefault()
@@ -79,17 +83,17 @@ export default {
       }
     },
     uploadExcel(rawFile){
-      this.loading = true;
-      this.$store.dispatch('customer/uploadExcel',rawFile ).then(() => {
-        this.$router.push({path: this.redirect || '/'});
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
+        this.loading = true;
+        this.$store.dispatch('customer/uploadExcel', rawFile).then(() => {
+          this.loading = false
+          this.uploadOnSuccess()
+        }).catch(() => {
+          this.loading = false
+        })
     }
     ,
     readerData(rawFile) {
-      this.loading = true
+      // this.loading = true
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = e => {
@@ -100,7 +104,7 @@ export default {
           const header = this.getHeaderRow(worksheet)
           const results = XLSX.utils.sheet_to_json(worksheet)
           this.generateData({ header, results })
-          this.loading = false
+          // this.loading = false
           resolve()
         }
         reader.readAsArrayBuffer(rawFile)
