@@ -24,7 +24,13 @@
                  @click="handleDownload">
         {{ $t('table.export') }}
       </el-button>
+
+      <upload-excel-component class="filter-item" :on-success="handleSuccess" :before-upload="beforeUpload" />
     </div>
+
+    <!--<el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">-->
+      <!--<el-table-column v-for="item of tableHeader" :key="item" :prop="item" :label="item" />-->
+    <!--</el-table>-->
 
     <el-table
       v-loading="listLoading"
@@ -94,9 +100,10 @@
 <script>
   import {getList} from '@/api/customer'
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+  import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 
   export default {
-    components: {Pagination},
+    components: {Pagination,UploadExcelComponent},
     data() {
       return {
         list: null,
@@ -109,6 +116,8 @@
           title: undefined,
           type: undefined
         },
+        tableData: [],
+        tableHeader: []
       }
     },
     created() {
@@ -141,6 +150,21 @@
       },
       formatJson(filterVal, jsonData) {
         return jsonData.map(v => filterVal.map(j => v[j]))
+      },
+      beforeUpload(file) {
+        const isLt1M = file.size / 1024 / 1024 < 1
+        if (isLt1M) {
+          return true
+        }
+        this.$message({
+          message: 'Please do not upload files larger than 1m in size.',
+          type: 'warning'
+        })
+        return false
+      },
+      handleSuccess({ results, header }) {
+        this.tableData = results
+        this.tableHeader = header
       }
     }
   }

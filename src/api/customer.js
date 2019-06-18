@@ -7,3 +7,11 @@ export function getList(params) {
     params
   })
 }
+export function uploadExcel(data) {
+  return request({
+    url: '/customer/importCustomerFromExcel',
+    headers: {'content-type':'multipart/form-data'},
+    method: 'post',
+    data
+  })
+}

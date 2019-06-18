@@ -156,6 +156,7 @@ export default {
   },
   excel: {
     export: '导出',
+    import: '导入',
     selectedExport: '导出已选择项',
     placeholder: '请输入文件名(默认excel-list)'
   },

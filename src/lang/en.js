@@ -156,6 +156,7 @@ export default {
   },
   excel: {
     export: 'Export',
+    import: 'Import',
     selectedExport: 'Export Selected Items',
     placeholder: 'Please enter the file name (default excel-list)'
   },
