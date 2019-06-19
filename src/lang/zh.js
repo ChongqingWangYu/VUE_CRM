@@ -3,6 +3,7 @@ export default {
     success:'语言切换成功'
   },
   customer:{
+    cusId:"序号",
     cusNo:"客户编号",
     cusName:"客户名称",
     cusPhone:"联系方式",

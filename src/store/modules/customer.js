@@ -4,6 +4,7 @@ import qs from 'qs'
 
 const actions = {
   uploadExcel({}, rawFile) {
+    console.log("uploadExcel")
     let file = new FormData()
     file.append("file", rawFile)
     return new Promise((resolve, reject) => {
@@ -47,7 +48,8 @@ const actions = {
         reject(error);
       })
     })
-  }, updateCustomer({}, customer) {
+  },
+  updateCustomer({}, customer) {
     customer = qs.stringify(customer)
     return new Promise((resolve, reject) => {
       updateCustomer(customer).then(response => {
@@ -62,7 +64,8 @@ const actions = {
         reject(error);
       })
     })
-  }, addCustomer({}, customer) {
+  },
+  addCustomer({}, customer) {
     customer = qs.stringify(customer)
     return new Promise((resolve, reject) => {
       addCustomer(customer).then(response => {

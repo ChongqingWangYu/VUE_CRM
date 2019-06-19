@@ -28,7 +28,6 @@ const actions = {
     user=qs.stringify(user);
     return new Promise((resolve, reject) => {
       login(user).then(response => {
-        console.log(response);
         commit('SET_TOKEN', response.token);
         setToken(response.token);
         resolve();
@@ -43,7 +42,6 @@ const actions = {
     user=qs.stringify(user);
     return new Promise((resolve, reject) => {
       register(user).then(response => {
-        console.log(response);
         if(response.message=="注册成功"){
           Msg.success(response.message);
           resolve();
@@ -59,7 +57,6 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
-        console.log(response);
         const { data } = response;
         if (!data) {
           reject('Verification failed, please Login again.');

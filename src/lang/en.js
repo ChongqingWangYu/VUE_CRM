@@ -3,6 +3,7 @@ export default {
     success:'Switch Language Success'
   },
   customer:{
+    cusId:"ID",
     cusNo:"Number",
     cusName:"Name",
     cusPhone:"Phone",

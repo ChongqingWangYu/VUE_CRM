@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="queryItems.selectKey" placeholder="索引" clearable style="width: 120px" class="filter-item">
+      <el-select v-model="queryItems.selectKey" placeholder="索引字段" clearable style="width: 120px" class="filter-item">
         <el-option v-for="item in customerSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
       </el-select>
-      <el-input v-model="queryItems.selectValue" clearable placeholder="关键字" style="width: 200px;" class="filter-item"
+      <el-input v-model="queryItems.selectValue" clearable placeholder="关键字" style="width: 250px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
       <el-select v-model="queryItems.selectLevel" clearable class="filter-item" style="width: 130px"
                  @change="handleFilter">
@@ -41,9 +41,9 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
+      <el-table-column align="center" :label="$t('customer.cusId')" width="95">
         <template slot-scope="scope">
-          {{ scope.row.cusId }}
+          {{ scope.$index+1}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusNo')" width="110">
@@ -97,31 +97,31 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="customer" :rules="customerRules" :model="customer" label-position="left" label-width="80px"
+      <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-position="left" label-width="80px"
                style="width: 400px; margin-left:50px;">
         <el-form-item :label="$t('customer.cusNo')" prop="cusNo">
-          <el-input v-model="customer.cusNo"/>
+          <el-input v-model="customerForm.cusNo"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusName')" prop="cusName">
-          <el-input v-model="customer.cusName"/>
+          <el-input v-model="customerForm.cusName"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusPhone')">
-          <el-input v-model="customer.cusPhone"/>
+          <el-input v-model="customerForm.cusPhone"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusAddr')">
-          <el-input v-model="customer.cusAddr"/>
+          <el-input v-model="customerForm.cusAddr"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusUrl')">
-          <el-input v-model="customer.cusUrl"/>
+          <el-input v-model="customerForm.cusUrl"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusLevel')">
-          <el-select v-model="customer.cusLevel" class="filter-item" placeholder="Please select">
+          <el-select v-model="customerForm.cusLevel" class="filter-item" placeholder="Please select">
             <el-option v-for="item in levelList" :key="item.key" :label="item.key"
                        :value="item.key"/>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('customer.cusCredit')">
-          <el-select v-model="customer.cusCredit" class="filter-item" placeholder="Please select">
+          <el-select v-model="customerForm.cusCredit" class="filter-item" placeholder="Please select">
             <el-option v-for="item in creditList" :key="item.key" :label="item.key"
                        :value="item.key"/>
           </el-select>
@@ -142,9 +142,11 @@
 <script>
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
+  import waves from '@/directive/waves' // waves directive
 
   export default {
     components: {Pagination, UploadExcelComponent},
+    directives: {waves},
     filters: {
       ellipsis(value) {
         if (!value) return ''
@@ -190,7 +192,7 @@
           update: 'Edit',
           create: 'Create'
         },
-        customer: {
+        customerForm: {
           cusId: "",
           cusNo: "",
           cusName: "",
@@ -208,8 +210,7 @@
           {key: "官方网址", value: "cusUrl"},
           {key: "合作等级", value: "cusLevel"},
           {key: "信用等级", value: "cusCredit"}
-        ]
-        ,
+        ],
         customerRules: {
           // cusId:"",
           cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
@@ -223,6 +224,7 @@
         list: null,
         total: 0,
         listLoading: true,
+        downloadLoading: false,
         pageQueryDTO: {
           page: 1,
           limit: 10,
@@ -243,6 +245,7 @@
     },
     methods: {
       fetchData() {
+        /*从后台获取数据*/
         this.listLoading = true
         this.$store.dispatch('customer/findCustomer', this.pageQueryDTO).then(response => {
           this.list = response.data.items
@@ -251,6 +254,7 @@
         })
       },
       handleDownload() {
+        /*导出数据到excel表格*/
         this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['序号', '客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '合作等级', '客户信用']
@@ -281,53 +285,66 @@
         return false
       },
       handleSuccess() {
+        /*导入excel数据成功*/
         this.fetchData()
-      }, handleDelete(row) {
+      },
+      handleDelete(row) {
+        /*删除数据*/
         this.$store.dispatch('customer/deleteCustomer', row.cusId).then(response => {
           this.fetchData()
         })
       },
       handleCreate() {
-        this.resetCustomer()
+        /*打开新增数据窗口*/
+        this.resetCustomerForm()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
+          this.$refs['customerForm'].clearValidate()
         })
       },
       handleUpdate(row) {
-        this.customer = Object.assign({}, row) // copy obj
+        /*打开编辑数据窗口*/
+        this.customerForm = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
+          this.$refs['customerForm'].clearValidate()
         })
       },
       createData() {
-        this.$refs.customer.validate((valid) => {
+        /*发送新增数据*/
+        this.$refs.customerForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('customer/addCustomer', this.customer).then(response => {
+            this.$store.dispatch('customer/addCustomer', this.customerForm).then(response => {
               this.dialogFormVisible = false
               this.fetchData()
             })
           }
         })
-      }, updateData() {
-        this.$refs.customer.validate((valid) => {
+      },
+      updateData() {
+        /*发送修改数据*/
+        this.$refs.customerForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('customer/updateCustomer', this.customer).then(response => {
+            this.$store.dispatch('customer/updateCustomer', this.customerForm).then(response => {
               this.dialogFormVisible = false
               this.fetchData()
             })
           }
         })
-      }, handleFilter() {
-        this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "cusLevel", "cusCredit"]
-        this.pageQueryDTO.columnsValue = ['%' + this.queryItems.selectValue + '%', this.queryItems.selectLevel, this.queryItems.selectCredit]
+      },
+      handleFilter() {
+        if (this.queryItems.selectValue != '' || this.queryItems.selectLevel != '' || this.queryItems.selectCredit != '') {
+          /*查询条件数据装配*/
+          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "cusLevel", "cusCredit"]
+          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectLevel, this.queryItems.selectCredit]
+        }
         this.fetchData();
       },
-      resetCustomer() {
-        this.customer = {
+      resetCustomerForm() {
+        /*表单数据清空*/
+        this.customerForm = {
           cusNo: "",
           cusName: "",
           cusPhone: "",
