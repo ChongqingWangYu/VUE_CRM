@@ -1,4 +1,4 @@
-import {uploadExcel, deleteCustomer, updateCustomer,addCustomer} from '@/api/customer'
+import {uploadExcel, deleteCustomer, updateCustomer,addCustomer,findCustomer} from '@/api/customer'
 import {Msg} from '@/utils/message'
 import qs from 'qs'
 
@@ -31,6 +31,17 @@ const actions = {
           Msg.error(response.message);
         }
         resolve();
+      }).catch(error => {
+        console.log(error);
+        reject(error);
+      })
+    })
+  },
+  findCustomer({}, pageQueryDTO) {
+    pageQueryDTO = qs.stringify(pageQueryDTO)
+    return new Promise((resolve, reject) => {
+      findCustomer(pageQueryDTO).then(response => {
+        resolve(response);
       }).catch(error => {
         console.log(error);
         reject(error);

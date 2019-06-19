@@ -1,17 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item"
+      <el-select v-model="queryItems.selectKey" placeholder="索引" clearable style="width: 120px" class="filter-item">
+        <el-option v-for="item in customerSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
+      </el-select>
+      <el-input v-model="queryItems.selectValue" clearable placeholder="关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
-      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
+      <el-select v-model="queryItems.selectLevel" clearable class="filter-item" style="width: 130px"
+                 @change="handleFilter">
+        <el-option v-for="item in levelList" :key="item.key" :label="item.key" :value="item.key"/>
       </el-select>
-      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'"
-                   :value="item.key"/>
-      </el-select>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
+      <el-select v-model="queryItems.selectCredit" clearable style="width: 140px" class="filter-item"
+                 @change="handleFilter">
+        <el-option v-for="item in creditList" :key="item.key" :label="item.key" :value="item.key"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         {{ $t('table.search') }}
@@ -92,7 +93,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
+    <pagination v-show="total>0" :total="total" :page.sync="pageQueryDTO.page" :limit.sync="pageQueryDTO.limit"
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -115,14 +116,14 @@
         </el-form-item>
         <el-form-item :label="$t('customer.cusLevel')">
           <el-select v-model="customer.cusLevel" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in levelList" :key="item.value" :label="item.label"
-                       :value="item.value"/>
+            <el-option v-for="item in levelList" :key="item.key" :label="item.key"
+                       :value="item.key"/>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('customer.cusCredit')">
           <el-select v-model="customer.cusCredit" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in creditList" :key="item.value" :label="item.label"
-                       :value="item.value"/>
+            <el-option v-for="item in creditList" :key="item.key" :label="item.key"
+                       :value="item.key"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -139,7 +140,6 @@
 </template>
 
 <script>
-  import {deleteCustomer, getList} from '@/api/customer'
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 
@@ -172,17 +172,17 @@
         }
       };
       return {
-        levelList: [{value: "一级", label: "一级"},
-          {value: "二级", label: "二级"},
-          {value: "三级", label: "三级"},
-          {value: "四级", label: "四级"},
-          {value: "五级", label: "五级"}
+        levelList: [{key: "一级"},
+          {key: "二级"},
+          {key: "三级"},
+          {key: "四级"},
+          {key: "五级"}
         ],
-        creditList: [{value: "青铜", label: "青铜"},
-          {value: "白银", label: "白银"},
-          {value: "黄金", label: "黄金"},
-          {value: "铂金", label: "铂金"},
-          {value: "钻石", label: "钻石"}
+        creditList: [{key: "青铜"},
+          {key: "白银"},
+          {key: "黄金"},
+          {key: "铂金"},
+          {key: "钻石"}
         ],
         dialogFormVisible: false,
         dialogStatus: '',
@@ -200,6 +200,16 @@
           cusLevel: "",
           cusCredit: ""
         },
+        customerSelectOptions: [
+          {key: "客户编号", value: "cusNo"},
+          {key: "客户名称", value: "cusName"},
+          {key: "联系方式", value: "cusPhone"},
+          {key: "联系地址", value: "cusAddr"},
+          {key: "官方网址", value: "cusUrl"},
+          {key: "合作等级", value: "cusLevel"},
+          {key: "信用等级", value: "cusCredit"}
+        ]
+        ,
         customerRules: {
           // cusId:"",
           cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
@@ -213,12 +223,16 @@
         list: null,
         total: 0,
         listLoading: true,
-        listQuery: {
+        pageQueryDTO: {
           page: 1,
           limit: 10,
-          importance: undefined,
-          title: undefined,
-          type: undefined
+          columnsName: [],
+          columnsValue: []
+        }, queryItems: {
+          selectKey: '',
+          selectValue: '',
+          selectLevel: '',
+          selectCredit: ''
         },
         tableData: [],
         tableHeader: []
@@ -230,7 +244,7 @@
     methods: {
       fetchData() {
         this.listLoading = true
-        getList(this.listQuery).then(response => {
+        this.$store.dispatch('customer/findCustomer', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
@@ -307,6 +321,10 @@
             })
           }
         })
+      }, handleFilter() {
+        this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "cusLevel", "cusCredit"]
+        this.pageQueryDTO.columnsValue = ['%' + this.queryItems.selectValue + '%', this.queryItems.selectLevel, this.queryItems.selectCredit]
+        this.fetchData();
       },
       resetCustomer() {
         this.customer = {
