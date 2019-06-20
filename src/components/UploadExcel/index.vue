@@ -82,6 +82,7 @@
         }
       },
       uploadExcel(rawFile) {
+        this.$refs['excel-upload-input'].value = null // fix can't select the same excel
         this.loading = true;
         this.$store.dispatch('customer/uploadExcel', rawFile).then(() => {
           this.loading = false

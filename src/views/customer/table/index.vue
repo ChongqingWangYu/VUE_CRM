@@ -22,6 +22,9 @@
                  @click="handleCreate">
         {{ $t('table.add') }}
       </el-button>
+
+      <upload-excel-component class="filter-item" :on-success="handleSuccess" :before-upload="beforeUpload"/>
+
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
                  @click="handleDownload">
         {{ $t('excel.export') }}
@@ -31,7 +34,6 @@
         {{ $t('excel.exportAll') }}
       </el-button>
 
-      <upload-excel-component class="filter-item" :on-success="handleSuccess" :before-upload="beforeUpload"/>
     </div>
 
     <!--<el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">-->
@@ -263,7 +265,7 @@
       handleDownload() {
         /*导出数据到excel表格*/
         this.downloadLoading = true
-        this.export2Excel(this.list,'thePageCustomer')
+        this.export2Excel(this.list, 'thePageCustomer')
         this.downloadLoading = false
       },
       handleDownloadAll() {
@@ -271,11 +273,11 @@
         this.downloadAllLoading = true
         this.$store.dispatch('customer/getAllCustomer', this.pageQueryDTO).then(response => {
           this.allCustomerList = response.data
-          this.export2Excel(this.allCustomerList,'allCustomer')
+          this.export2Excel(this.allCustomerList, 'allCustomer')
           this.downloadAllLoading = false
         })
       },
-      export2Excel(list,excleName) {
+      export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['序号', '客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '合作等级', '客户信用']
           const filterVal = ['cusId', 'cusNo', 'cusName', 'cusPhone', 'cusAddr', 'cusUrl', 'cusLevel', 'cusCredit']

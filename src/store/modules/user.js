@@ -64,7 +64,7 @@ const actions = {
         const { petName, avatar } = data;
         commit('SET_NAME', petName);
         commit('SET_AVATAR', avatar);
-        resolve(data);
+        resolve(response);
       }).catch(error => {
         console.log(error);
         reject(error);

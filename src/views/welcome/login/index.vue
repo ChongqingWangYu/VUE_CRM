@@ -118,6 +118,7 @@
             this.loading = true;
             this.$store.dispatch('user/login', this.loginForm).then(() => {
               this.$router.push({path: this.redirect || '/'});
+              // this.$router.push({path:'/customer/table'});
               this.loading = false
             }).catch((error) => {
               this.loading = false
