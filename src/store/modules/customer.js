@@ -1,4 +1,4 @@
-import {uploadExcel, deleteCustomer, updateCustomer,addCustomer,findCustomer} from '@/api/customer'
+import {uploadExcel, deleteCustomer, updateCustomer,addCustomer,findPageCustomer,getAllCustomer} from '@/api/customer'
 import {Msg} from '@/utils/message'
 import qs from 'qs'
 
@@ -38,10 +38,21 @@ const actions = {
       })
     })
   },
-  findCustomer({}, pageQueryDTO) {
+  findPageCustomer({}, pageQueryDTO) {
     pageQueryDTO = qs.stringify(pageQueryDTO)
     return new Promise((resolve, reject) => {
-      findCustomer(pageQueryDTO).then(response => {
+      findPageCustomer(pageQueryDTO).then(response => {
+        resolve(response);
+      }).catch(error => {
+        console.log(error);
+        reject(error);
+      })
+    })
+  },
+  getAllCustomer({}) {
+    return new Promise((resolve, reject) => {
+      getAllCustomer().then(response => {
+        Msg.success(response.message)
         resolve(response);
       }).catch(error => {
         console.log(error);

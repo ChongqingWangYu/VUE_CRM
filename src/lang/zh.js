@@ -156,8 +156,9 @@ export default {
     documentation: '文档介绍'
   },
   excel: {
-    export: '导出',
-    import: '导入',
+    export: '导出此页',
+    exportAll: '导出所有',
+    import: '导入Excel',
     selectedExport: '导出已选择项',
     placeholder: '请输入文件名(默认excel-list)'
   },

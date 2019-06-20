@@ -1,10 +1,16 @@
 import request from '@/utils/request'
 
-export function findCustomer(data) {
+export function findPageCustomer(data) {
   return request({
-    url: '/customer/findAllCustomer',
+    url: '/customer/findPageCustomer',
     method: 'post',
     data
+  })
+}
+export function getAllCustomer() {
+  return request({
+    url: '/customer/getAllCustomer',
+    method: 'get'
   })
 }
 

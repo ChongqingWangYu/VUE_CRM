@@ -156,8 +156,9 @@ export default {
     documentation: 'Document introduction'
   },
   excel: {
-    export: 'Export',
-    import: 'Import',
+    export: 'ExportPage',
+    exportAll: 'ExportAll',
+    import: 'ImportExcel',
     selectedExport: 'Export Selected Items',
     placeholder: 'Please enter the file name (default excel-list)'
   },

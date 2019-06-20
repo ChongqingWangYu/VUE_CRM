@@ -4,7 +4,7 @@
       <el-select v-model="queryItems.selectKey" placeholder="索引字段" clearable style="width: 120px" class="filter-item">
         <el-option v-for="item in customerSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
       </el-select>
-      <el-input v-model="queryItems.selectValue" clearable placeholder="关键字" style="width: 250px;" class="filter-item"
+      <el-input v-model="queryItems.selectValue" clearable placeholder="关键字" style="width: 220px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
       <el-select v-model="queryItems.selectLevel" clearable class="filter-item" style="width: 130px"
                  @change="handleFilter">
@@ -14,7 +14,8 @@
                  @change="handleFilter">
         <el-option v-for="item in creditList" :key="item.key" :label="item.key" :value="item.key"/>
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button v-waves class="filter-item" type="primary" style="margin-left: 10px;" icon="el-icon-search"
+                 @click="handleFilter">
         {{ $t('table.search') }}
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit"
@@ -23,7 +24,11 @@
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
                  @click="handleDownload">
-        {{ $t('table.export') }}
+        {{ $t('excel.export') }}
+      </el-button>
+      <el-button v-waves :loading="downloadAllLoading" class="filter-item" type="primary" icon="el-icon-download"
+                 @click="handleDownloadAll">
+        {{ $t('excel.exportAll') }}
       </el-button>
 
       <upload-excel-component class="filter-item" :on-success="handleSuccess" :before-upload="beforeUpload"/>
@@ -222,9 +227,11 @@
           // cusCredit: ""
         },
         list: null,
+        allCustomerList: null,
         total: 0,
         listLoading: true,
         downloadLoading: false,
+        downloadAllLoading: false,
         pageQueryDTO: {
           page: 1,
           limit: 10,
@@ -247,7 +254,7 @@
       fetchData() {
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('customer/findCustomer', this.pageQueryDTO).then(response => {
+        this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
@@ -256,18 +263,30 @@
       handleDownload() {
         /*导出数据到excel表格*/
         this.downloadLoading = true
+        this.export2Excel(this.list,'thePageCustomer')
+        this.downloadLoading = false
+      },
+      handleDownloadAll() {
+        /*导出数据到excel表格*/
+        this.downloadAllLoading = true
+        this.$store.dispatch('customer/getAllCustomer', this.pageQueryDTO).then(response => {
+          this.allCustomerList = response.data
+          this.export2Excel(this.allCustomerList,'allCustomer')
+          this.downloadAllLoading = false
+        })
+      },
+      export2Excel(list,excleName) {
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['序号', '客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '合作等级', '客户信用']
           const filterVal = ['cusId', 'cusNo', 'cusName', 'cusPhone', 'cusAddr', 'cusUrl', 'cusLevel', 'cusCredit']
-          const data = this.formatJson(filterVal, this.list)
+          const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填
             data, //具体数据 必填
-            filename: 'excel-list', //非必填
+            filename: excleName, //非必填
             autoWidth: true, //非必填
             bookType: 'xlsx' //非必填
           })
-          this.downloadLoading = false
         })
       },
       formatJson(filterVal, jsonData) {

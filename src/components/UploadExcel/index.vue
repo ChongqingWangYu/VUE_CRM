@@ -35,8 +35,7 @@
       },
       uploadOnSuccess() {
         this.onSuccess()
-      }
-      ,
+      },
       handleDrop(e) {
         e.stopPropagation()
         e.preventDefault()
@@ -90,8 +89,7 @@
         }).catch(() => {
           this.loading = false
         })
-      }
-      ,
+      },
       readerData(rawFile) {
         // this.loading = true
         return new Promise((resolve, reject) => {
