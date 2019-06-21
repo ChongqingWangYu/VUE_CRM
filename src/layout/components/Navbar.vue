@@ -20,11 +20,14 @@
               Home
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
+          <a target="_blank" href="https://github.com/ChongqingWangYu">
             <el-dropdown-item>Github</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+          <a target="_blank" href="http://chongqingwangyu.xyz/">
+            <el-dropdown-item>MyResume</el-dropdown-item>
+          </a>
+          <a target="_blank" href="https://www.cnblogs.com/yuyu97513/">
+            <el-dropdown-item>Blogs</el-dropdown-item>
           </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">Log Out</span>

@@ -53,7 +53,7 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusNo')" width="110">
+      <el-table-column :label="$t('customer.cusNo')" width="100">
         <template slot-scope="scope">
           {{ scope.row.cusNo }}
         </template>
@@ -73,17 +73,17 @@
           {{ scope.row.cusAddr|ellipsis }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusUrl')" width="160" align="center">
+      <el-table-column :label="$t('customer.cusUrl')" width="190" align="center">
         <template slot-scope="scope">
-          {{ scope.row.cusUrl|ellipsis}}
+          <a :href="scope.row.cusUrl" target="_blank"> {{ scope.row.cusUrl}}</a>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusLevel')" width="110" align="center">
+      <el-table-column :label="$t('customer.cusLevel')" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.cusLevel }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusCredit')" width="110" align="center">
+      <el-table-column :label="$t('customer.cusCredit')" width="100" align="center">
         <template slot-scope="scope">
           {{ scope.row.cusCredit }}
         </template>
@@ -338,8 +338,10 @@
         this.$refs.customerForm.validate((valid) => {
           if (valid) {
             this.$store.dispatch('customer/addCustomer', this.customerForm).then(response => {
-              this.dialogFormVisible = false
-              this.fetchData()
+              if (response.data == "succeed") {
+                this.dialogFormVisible = false
+                this.fetchData()
+              }
             })
           }
         })
@@ -356,6 +358,8 @@
         })
       },
       handleFilter() {
+        this.pageQueryDTO.columnsName = []
+        this.pageQueryDTO.columnsValue = []
         if (this.queryItems.selectValue != '' || this.queryItems.selectLevel != '' || this.queryItems.selectCredit != '') {
           /*查询条件数据装配*/
           this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "cusLevel", "cusCredit"]

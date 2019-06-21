@@ -1,4 +1,11 @@
-import {uploadExcel, deleteCustomer, updateCustomer,addCustomer,findPageCustomer,getAllCustomer} from '@/api/customer'
+import {
+  addCustomer,
+  deleteCustomer,
+  findPageCustomer,
+  getAllCustomer,
+  updateCustomer,
+  uploadExcel
+} from '@/api/customer'
 import {Msg} from '@/utils/message'
 import qs from 'qs'
 
@@ -9,10 +16,16 @@ const actions = {
     file.append("file", rawFile)
     return new Promise((resolve, reject) => {
       uploadExcel(file).then(response => {
-        if (response.message != "导入失败") {
-          Msg.success(response.message);
-        } else {
-          Msg.error(response.message);
+        switch (response.data) {
+          case "succeed":
+            Msg.success(response.message);
+            break;
+          case "warn":
+            Msg.warn(response.message);
+            break;
+          case "info":
+            Msg.info(response.message);
+            break;
         }
         resolve();
       }).catch(error => {
@@ -80,12 +93,12 @@ const actions = {
     customer = qs.stringify(customer)
     return new Promise((resolve, reject) => {
       addCustomer(customer).then(response => {
-        if (response.message != "修改失败") {
+        if (response.data != "error") {
           Msg.success(response.message);
         } else {
           Msg.error(response.message);
         }
-        resolve();
+        resolve(response);
       }).catch(error => {
         console.log(error);
         reject(error);

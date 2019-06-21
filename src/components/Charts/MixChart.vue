@@ -47,14 +47,14 @@ export default {
       const xData = (function() {
         const data = []
         for (let i = 1; i < 13; i++) {
-          data.push(i + 'month')
+          data.push(i + '月')
         }
         return data
       }())
       this.chart.setOption({
         backgroundColor: '#344b58',
         title: {
-          text: 'statistics',
+          text: '客户增长折线图',
           x: '20',
           top: '20',
           textStyle: {
@@ -90,7 +90,7 @@ export default {
           textStyle: {
             color: '#90979c'
           },
-          data: ['female', 'male', 'average']
+          data: ['重点高校', '普通高校', '月增长']
         },
         calculable: true,
         xAxis: [{
@@ -162,14 +162,14 @@ export default {
           end: 35
         }],
         series: [{
-          name: 'female',
+          name: '重点高校',
           type: 'bar',
           stack: 'total',
           barMaxWidth: 35,
           barGap: '10%',
           itemStyle: {
             normal: {
-              color: 'rgba(255,144,128,1)',
+              color: 'rgba(0,191,183,1)',
               label: {
                 show: true,
                 textStyle: {
@@ -199,12 +199,12 @@ export default {
         },
 
         {
-          name: 'male',
+          name: '普通高校',
           type: 'bar',
           stack: 'total',
           itemStyle: {
             normal: {
-              color: 'rgba(0,191,183,1)',
+              color: 'rgba(255,144,128,1)',
               barBorderRadius: 0,
               label: {
                 show: true,
@@ -230,7 +230,7 @@ export default {
             220
           ]
         }, {
-          name: 'average',
+          name: '月增长',
           type: 'line',
           stack: 'total',
           symbolSize: 10,

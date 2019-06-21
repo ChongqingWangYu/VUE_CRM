@@ -1,12 +1,11 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import {MessageBox, Message} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {getToken} from '@/utils/auth'
 import qs from 'qs'
-
 // create an axios instance
 const service = axios.create({
-  headers: {'content-type':'application/x-www-form-urlencoded'},
+  headers: {'content-type': 'application/x-www-form-urlencoded'},
   baseURL: `http://127.0.0.1:8080`, // url = base url + request url
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
@@ -38,7 +37,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -56,6 +55,7 @@ service.interceptors.response.use(
       });
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+        console.log(res.code)
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
           confirmButtonText: 'Re-Login',
@@ -67,14 +67,14 @@ service.interceptors.response.use(
           })
         })
       }
-      console.log(res);
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
   error => {
-    console.log('err' + error); // for debug
+    console.log(error); // for debug
+    error.message="服务器连接失败"
     Message({
       message: error.message,
       type: 'error',
