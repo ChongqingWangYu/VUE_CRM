@@ -26,6 +26,9 @@ const actions = {
           case "info":
             Msg.info(response.message);
             break;
+          case "error":
+            Msg.error(response.message);
+            break;
         }
         resolve();
       }).catch(error => {
