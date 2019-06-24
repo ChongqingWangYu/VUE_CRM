@@ -4,7 +4,7 @@
     <div class="dashboard-text">{{ name }}</div>
     <el-button type="primary" icon="upload" style="position: absolute;margin-top: 15px;margin-left: 10px;"
                @click="imagecropperShow=true">
-      上传头像
+      {{ $t('route.avatarUpload') }}
     </el-button>
     <image-cropper
       v-show="imagecropperShow"

@@ -3,6 +3,7 @@ export default {
     success:'语言切换成功'
   },
   customer:{
+    title:"客户",
     cusId:"序号",
     cusNo:"客户编号",
     cusName:"客户名称",
@@ -11,6 +12,10 @@ export default {
     cusUrl:"官方网址",
     cusLevel:"合作等级",
     cusCredit:"客户信用",
+    create:"新增客户信息",
+    update:"更新客户信息",
+    edit:"编辑客户信息",
+    pleaseSelect:"请选择"
   },
   route: {
     dashboard: '首页',

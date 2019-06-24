@@ -3,6 +3,7 @@ export default {
     success:'Switch Language Success'
   },
   customer:{
+    title:"Customer",
     cusId:"ID",
     cusNo:"Number",
     cusName:"Name",
@@ -11,6 +12,9 @@ export default {
     cusUrl:"Url",
     cusLevel:"Level",
     cusCredit:"Credit",
+    create:"Create",
+    update:"Update",
+    pleaseSelect:"Please select"
   },
   route: {
     dashboard: 'Dashboard',

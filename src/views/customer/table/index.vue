@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="queryItems.selectKey" placeholder="索引字段" clearable style="width: 120px" class="filter-item">
+      <el-select v-model="queryItems.selectKey" placeholder="搜索字段" clearable style="width: 120px" class="filter-item">
         <el-option v-for="item in customerSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
       </el-select>
-      <el-input v-model="queryItems.selectValue" clearable placeholder="关键字" style="width: 220px;" class="filter-item"
+      <el-input v-model="queryItems.selectValue" clearable placeholder="搜索关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
-      <el-select v-model="queryItems.selectLevel" clearable class="filter-item" style="width: 130px"
+      <el-select v-model="queryItems.selectLevel" placeholder="合作等级" clearable class="filter-item" style="width: 130px"
                  @change="handleFilter">
         <el-option v-for="item in levelList" :key="item.key" :label="item.key" :value="item.key"/>
       </el-select>
-      <el-select v-model="queryItems.selectCredit" clearable style="width: 140px" class="filter-item"
+      <el-select v-model="queryItems.selectCredit" placeholder="信用等级" clearable style="width: 140px" class="filter-item"
                  @change="handleFilter">
         <el-option v-for="item in creditList" :key="item.key" :label="item.key" :value="item.key"/>
       </el-select>
@@ -48,47 +48,47 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" :label="$t('customer.cusId')" width="95">
+      <el-table-column align="center" :label="$t('customer.cusId')" width="50">
         <template slot-scope="scope">
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusNo')" width="100">
+      <el-table-column :label="$t('customer.cusNo')" width="80">
         <template slot-scope="scope">
           {{ scope.row.cusNo }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusName')" width="160">
+      <el-table-column :label="$t('customer.cusName')" width="190">
         <template slot-scope="scope">
           {{ scope.row.cusName }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusPhone')" width="110" align="center">
+      <el-table-column :label="$t('customer.cusPhone')" width="150" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.cusPhone|ellipsis}}</span>
+          <span>{{ scope.row.cusPhone|phoneEllipsis}}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusAddr')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.cusAddr|ellipsis }}
+          {{ scope.row.cusAddr|addrEllipsis }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusUrl')" width="190" align="center">
+      <el-table-column :label="$t('customer.cusUrl')" width="200" align="center">
         <template slot-scope="scope">
-          <a :href="scope.row.cusUrl" target="_blank"> {{ scope.row.cusUrl}}</a>
+          <a :href="scope.row.cusUrl" target="_blank"> {{ scope.row.cusUrl|urlEllipsis }}</a>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusLevel')" width="100" align="center">
+      <el-table-column :label="$t('customer.cusLevel')" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.cusLevel }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusCredit')" width="100" align="center">
+      <el-table-column :label="$t('customer.cusCredit')" width="80" align="center">
         <template slot-scope="scope">
           {{ scope.row.cusCredit }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="260" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button size="mini" type="primary" @click="handleUpdate(row)">
             {{ $t('table.edit') }}
@@ -105,14 +105,14 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-position="left" label-width="80px"
-               style="width: 400px; margin-left:50px;">
+               style="width: 400px; margin-left:150px;">
         <el-form-item :label="$t('customer.cusNo')" prop="cusNo">
           <el-input v-model="customerForm.cusNo"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusName')" prop="cusName">
           <el-input v-model="customerForm.cusName"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusPhone')">
+        <el-form-item :label="$t('customer.cusPhone')"  prop="cusPhone">
           <el-input v-model="customerForm.cusPhone"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusAddr')">
@@ -122,13 +122,13 @@
           <el-input v-model="customerForm.cusUrl"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusLevel')">
-          <el-select v-model="customerForm.cusLevel" class="filter-item" placeholder="Please select">
+          <el-select v-model="customerForm.cusLevel" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
             <el-option v-for="item in levelList" :key="item.key" :label="item.key"
                        :value="item.key"/>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('customer.cusCredit')">
-          <el-select v-model="customerForm.cusCredit" class="filter-item" placeholder="Please select">
+          <el-select v-model="customerForm.cusCredit" class="filter-item" :placeholder="$t('customer.pleaseSelect')" >
             <el-option v-for="item in creditList" :key="item.key" :label="item.key"
                        :value="item.key"/>
           </el-select>
@@ -136,10 +136,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel
+          {{ $t('permission.cancel') }}
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          {{ $t('permission.confirm') }}
         </el-button>
       </div>
     </el-dialog>
@@ -155,18 +155,44 @@
     components: {Pagination, UploadExcelComponent},
     directives: {waves},
     filters: {
-      ellipsis(value) {
+      addrEllipsis(value) {
         if (!value) return ''
-        if (value.length > 30) {
-          return value.slice(0, 20) + '...'
+        if (value.length > 16) {
+          return value.slice(0, 16) + '...'
+        }
+        return value
+      },
+      phoneEllipsis(value) {
+        if (!value) return ''
+        if (value.length > 12) {
+          return value.slice(0, 12) + '...'
+        }
+        return value
+      },
+      urlEllipsis(value) {
+        if (!value) return ''
+        if (value.length > 24) {
+          return value.slice(0, 24) + '...'
         }
         return value
       }
     },
     data() {
       const validateCusNo = (rule, value, callback) => {
+        var numReg = /^[0-9]+$/
+        var numRe = new RegExp(numReg)
         if (value === '') {
           callback(new Error('客户编号不能为空'))
+        }else if(!numRe.test(value)){
+          callback(new Error('客户编号必须为数字'))
+        }
+        else {
+          callback()
+        }
+      };
+      const validateCusPhone = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('联系电话不能为空'))
         }
         else {
           callback()
@@ -196,8 +222,8 @@
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
-          update: 'Edit',
-          create: 'Create'
+          update: this.$t('customer.update'),
+          create: this.$t('customer.create')
         },
         customerForm: {
           cusId: "",
@@ -215,14 +241,14 @@
           {key: "联系方式", value: "cusPhone"},
           {key: "联系地址", value: "cusAddr"},
           {key: "官方网址", value: "cusUrl"},
-          {key: "合作等级", value: "cusLevel"},
-          {key: "信用等级", value: "cusCredit"}
+          // {key: "合作等级", value: "cusLevel"},
+          // {key: "信用等级", value: "cusCredit"}
         ],
         customerRules: {
           // cusId:"",
           cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
           cusName: [{required: true, trigger: 'blur', validator: validateCusName}],
-          // cusPhone: "",
+          cusPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
           // cusAddr: "",
           // cusUrl: "",
           // cusLevel: "",

@@ -56,7 +56,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
   {
@@ -64,19 +64,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/customer/table',
     name: 'Customer',
-    meta: { title: 'Customer', icon: 'user' },
+    meta: { title: '客户', icon: 'user' },
     children: [
       {
         path: 'table',
         name: 'Table',
         component: () => import('@/views/customer/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: '表格', icon: 'table' }
       },
       {
         path: 'MixChart',
         name: 'MixChart',
         component: () => import('@/views/customer/charts/mix-chart'),
-        meta: { title: 'MixChart', icon: 'chart' }
+        meta: { title: '图表', icon: 'chart' }
       }
     ]
   },
