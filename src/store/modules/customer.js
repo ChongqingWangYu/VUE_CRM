@@ -11,7 +11,6 @@ import qs from 'qs'
 
 const actions = {
   uploadExcel({}, rawFile) {
-    console.log("uploadExcel")
     let file = new FormData()
     file.append("file", rawFile)
     return new Promise((resolve, reject) => {

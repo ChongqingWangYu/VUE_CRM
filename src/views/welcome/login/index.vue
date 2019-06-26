@@ -4,7 +4,7 @@
              label-position="left">
 
       <div class="title-container">
-        <h3 class="title">系统登录</h3>
+        <h3 class="title">客户关系管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -57,12 +57,9 @@
 </template>
 
 <script>
-  import {validUsername} from '@/utils/validate'
-
   export default {
     data() {
       const validateUsername = (rule, value, callback) => {
-        // if (!validUsername(value)) {
         if (value === '') {
           callback(new Error('请输入用户名'))
         } else {
@@ -118,10 +115,10 @@
             this.loading = true;
             this.$store.dispatch('user/login', this.loginForm).then(() => {
               this.$router.push({path: this.redirect || '/'});
-              // this.$router.push({path:'/customer/table'});
               this.loading = false
             }).catch((error) => {
               this.loading = false
+              console.log(error);
             })
           } else {
             console.log('error submit!!');

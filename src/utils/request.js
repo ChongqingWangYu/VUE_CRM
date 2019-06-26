@@ -2,11 +2,11 @@ import axios from 'axios'
 import {MessageBox, Message} from 'element-ui'
 import store from '@/store'
 import {getToken} from '@/utils/auth'
-import qs from 'qs'
 // create an axios instance
 const service = axios.create({
   headers: {'content-type': 'application/x-www-form-urlencoded'},
-  baseURL: `http://127.0.0.1:8080`, // url = base url + request url
+  baseURL: `http://chongqingwangyu.xyz/SSM_CRM`, // url = base url + request url
+  // baseURL: `http://127.0.0.1:8080`, // url = base url + request url
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 15000// request timeout
@@ -16,22 +16,21 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       config.headers['X-Token'] = getToken()
     }
+    console.log(config)
     return config
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+    console.log(error)
     return Promise.reject(error)
   }
 )
-
 // response interceptor
 service.interceptors.response.use(
   /**
@@ -44,7 +43,8 @@ service.interceptors.response.use(
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
-  response => {
+   response => {
+    console.log(response)
     const res = response.data;
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000) {
@@ -57,9 +57,9 @@ service.interceptors.response.use(
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         console.log(res.code)
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('您已经注销，您可以取消以停留在此页面，或再次登录', '确认注销', {
+          confirmButtonText: '重新登入',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -73,7 +73,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log(error); // for debug
+    console.log("request:"+error); // for debug
     error.message="服务器连接失败"
     Message({
       message: error.message,

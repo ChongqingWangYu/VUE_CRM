@@ -11,7 +11,7 @@
       :key="imagecropperKey"
       :width="300"
       :height="300"
-      url="http://127.0.0.1:8080/user/uploadImage"
+      url="http://39.108.252.228:8080/SSM_CRM/user/uploadImage"
       lang-type="en"
       @close="close"
       @crop-upload-success="cropSuccess"

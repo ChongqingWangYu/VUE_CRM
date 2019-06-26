@@ -25,10 +25,10 @@ import i18n from './lang' // internationalization
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
-import { mockXHR } from '../mock'
-if (process.env.NODE_ENV === 'production') {
-  mockXHR()
-}
+// import { mockXHR } from '../mock'
+// if (process.env.NODE_ENV === 'production') {
+//   mockXHR()
+// }
 
 // set ElementUI lang to EN
 

@@ -77,7 +77,6 @@
 </template>
 
 <script>
-  import {validUsername} from '@/utils/validate'
 
   export default {
     data() {
@@ -151,8 +150,10 @@
         this.$refs.registerForm.validate(valid => {
           if (valid) {
             this.loading = true;
-            this.$store.dispatch('user/register', user).then(() => {
-              this.$router.push({path: this.redirect || '/'});
+            this.$store.dispatch('user/register', user).then( res => {
+              if(res.massage=="注册成功"){
+                this.$router.push({path: this.redirect || '/'});
+              }
               this.loading = false
             }).catch(() => {
               this.loading = false

@@ -1,13 +1,14 @@
-import { login, logout, getInfo ,register} from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import {getInfo, login, logout, register} from '@/api/user'
+import {getToken, removeToken, setToken} from '@/utils/auth'
+import {resetRouter} from '@/router'
 import qs from 'qs'
 import {Msg} from '@/utils/message';
+
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  massage:''
+  massage: ''
 }
 
 const mutations = {
@@ -24,10 +25,11 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, user) {
-    user=qs.stringify(user);
+  login({commit}, user) {
+    user = qs.stringify(user);
     return new Promise((resolve, reject) => {
       login(user).then(response => {
+        console.log(response)
         commit('SET_TOKEN', response.token);
         setToken(response.token);
         resolve();
@@ -38,30 +40,30 @@ const actions = {
     })
   },
   // user register
-  register({ commit }, user) {
-    user=qs.stringify(user);
+  register({commit}, user) {
+    user = qs.stringify(user);
     return new Promise((resolve, reject) => {
       register(user).then(response => {
-        if(response.message=="注册成功"){
+        if (response.message == "注册成功") {
           Msg.success(response.message);
-          resolve();
-        }else {
+        } else {
           Msg.error(response.message);
         }
+        resolve();
       }).catch(error => {
         reject(error);
       })
     })
   },
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({commit, state}) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
-        const { data } = response;
+        const {data} = response;
         if (!data) {
           reject('Verification failed, please Login again.');
         }
-        const { petName, avatar } = data;
+        const {petName, avatar} = data;
         commit('SET_NAME', petName);
         commit('SET_AVATAR', avatar);
         resolve(response);
@@ -73,7 +75,7 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({commit, state}) {
     return new Promise((resolve, reject) => {
       logout(state.token).then((response) => {
         commit('SET_TOKEN', '');
@@ -89,7 +91,7 @@ const actions = {
   },
 
   // remove token
-  resetToken({ commit }) {
+  resetToken({commit}) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '');
       removeToken();

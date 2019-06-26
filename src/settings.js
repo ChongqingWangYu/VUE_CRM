@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'SSM_CRM',
+  title: '客户关系管理系统',
 
   /**
    * @type {boolean} true | false
