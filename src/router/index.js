@@ -64,13 +64,25 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/customer/table',
     name: 'Customer',
-    meta: { title: '客户', icon: 'user' },
+    meta: { title: '客户管理', icon: 'user' },
     children: [
       {
         path: 'table',
         name: 'Table',
         component: () => import('@/views/customer/table/index'),
-        meta: { title: '表格', icon: 'table' }
+        meta: { title: '客户列表', icon: 'table' }
+      },
+      {
+        path: 'contact',
+        name: 'Contact',
+        // component: () => import('@/views/customer/charts/mix-chart'),
+        meta: { title: '联系人列表', icon: 'table' }
+      },
+      {
+        path: 'follow',
+        name: 'Follow',
+        // component: () => import('@/views/customer/charts/mix-chart'),
+        meta: { title: '跟进列表', icon: 'table' }
       },
       {
         path: 'MixChart',

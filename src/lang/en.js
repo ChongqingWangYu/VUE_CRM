@@ -11,7 +11,9 @@ export default {
     cusAddr:"Addr",
     cusUrl:"Url",
     cusLevel:"Level",
+    cusType:"Type",
     cusCredit:"Credit",
+    cusStatus:"Status",
     create:"Create",
     update:"Update",
     pleaseSelect:"Please select"

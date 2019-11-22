@@ -6,13 +6,13 @@
       </el-select>
       <el-input v-model="queryItems.selectValue" clearable placeholder="搜索关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
-      <el-select v-model="queryItems.selectLevel" placeholder="合作等级" clearable class="filter-item" style="width: 130px"
+      <el-select v-model="queryItems.selectType" placeholder="客户类型" clearable class="filter-item" style="width: 130px"
                  @change="handleFilter">
-        <el-option v-for="item in levelList" :key="item.key" :label="item.key" :value="item.key"/>
+        <el-option v-for="item in typeList" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
-      <el-select v-model="queryItems.selectCredit" placeholder="信用等级" clearable style="width: 140px" class="filter-item"
+      <el-select v-model="queryItems.selectStatus" placeholder="客户状态" clearable style="width: 140px" class="filter-item"
                  @change="handleFilter">
-        <el-option v-for="item in creditList" :key="item.key" :label="item.key" :value="item.key"/>
+        <el-option v-for="item in statusList" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" style="margin-left: 10px;" icon="el-icon-search"
                  @click="handleFilter">
@@ -55,37 +55,37 @@
       </el-table-column>
       <el-table-column :label="$t('customer.cusNo')" width="80">
         <template slot-scope="scope">
-          {{ scope.row.cusNo }}
+          {{ scope.row.customerID }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusName')" width="190">
         <template slot-scope="scope">
-          {{ scope.row.cusName }}
+          {{ scope.row.customerName|nameEllipsis}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusPhone')" width="150" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.cusPhone|phoneEllipsis}}</span>
+          {{ scope.row.customerPhone|phoneEllipsis}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusAddr')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.cusAddr|addrEllipsis }}
+          {{ scope.row.customerAddress|addrEllipsis }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusUrl')" width="200" align="center">
         <template slot-scope="scope">
-          <a :href="scope.row.cusUrl" target="_blank"> {{ scope.row.cusUrl|urlEllipsis }}</a>
+          <a :href="scope.row.customerUrl" target="_blank"> {{ scope.row.customerUrl|urlEllipsis }}</a>
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusLevel')" width="80" align="center">
         <template slot-scope="scope">
-          {{ scope.row.cusLevel }}
+          {{ typeList[scope.row.customerType-1].text }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusCredit')" width="80" align="center">
         <template slot-scope="scope">
-          {{ scope.row.cusCredit }}
+          {{ statusList[scope.row.customerStatus-1].text }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
@@ -106,31 +106,32 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-position="left" label-width="80px"
                style="width: 400px; margin-left:150px;">
-        <el-form-item :label="$t('customer.cusNo')" prop="cusNo">
-          <el-input v-model="customerForm.cusNo"/>
+        <!--<el-form-item :label="$t('customer.cusId')" prop="cusNo">-->
+        <!--<el-input v-model="customerForm.customerID"/>-->
+        <!--</el-form-item>-->
+        <el-form-item :label="$t('customer.cusName')" prop="customerName">
+          <el-input v-model="customerForm.customerName"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusName')" prop="cusName">
-          <el-input v-model="customerForm.cusName"/>
-        </el-form-item>
-        <el-form-item :label="$t('customer.cusPhone')"  prop="cusPhone">
-          <el-input v-model="customerForm.cusPhone"/>
+        <el-form-item :label="$t('customer.cusPhone')" prop="customerPhone">
+          <el-input v-model="customerForm.customerPhone"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusAddr')">
-          <el-input v-model="customerForm.cusAddr"/>
+          <el-input v-model="customerForm.customerAddress"/>
         </el-form-item>
         <el-form-item :label="$t('customer.cusUrl')">
-          <el-input v-model="customerForm.cusUrl"/>
+          <el-input v-model="customerForm.customerUrl"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusLevel')">
-          <el-select v-model="customerForm.cusLevel" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
-            <el-option v-for="item in levelList" :key="item.key" :label="item.key"
-                       :value="item.key"/>
+        <el-form-item :label="$t('customer.cusType')">
+          <el-select v-model="customerForm.customerType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
+            <el-option v-for="item in typeList" :key="item.value" :label="item.text"
+                       :value="item.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusCredit')">
-          <el-select v-model="customerForm.cusCredit" class="filter-item" :placeholder="$t('customer.pleaseSelect')" >
-            <el-option v-for="item in creditList" :key="item.key" :label="item.key"
-                       :value="item.key"/>
+        <el-form-item :label="$t('customer.cusStatus')">
+          <el-select v-model="customerForm.customerStatus" class="filter-item"
+                     :placeholder="$t('customer.pleaseSelect')">
+            <el-option v-for="item in statusList" :key="item.value" :label="item.text"
+                       :value="item.value"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -162,6 +163,13 @@
         }
         return value
       },
+      nameEllipsis(value) {
+        if (!value) return ''
+        if (value.length > 11) {
+          return value.slice(0, 11) + '...'
+        }
+        return value
+      },
       phoneEllipsis(value) {
         if (!value) return ''
         if (value.length > 12) {
@@ -183,7 +191,7 @@
         var numRe = new RegExp(numReg)
         if (value === '') {
           callback(new Error('客户编号不能为空'))
-        }else if(!numRe.test(value)){
+        } else if (!numRe.test(value)) {
           callback(new Error('客户编号必须为数字'))
         }
         else {
@@ -207,17 +215,16 @@
         }
       };
       return {
-        levelList: [{key: "一级"},
-          {key: "二级"},
-          {key: "三级"},
-          {key: "四级"},
-          {key: "五级"}
+        typeList: [
+          {text: "有意向", value: 1},
+          {text: "无意向 ", value: 2},
+          {text: "已成交", value: 3}
         ],
-        creditList: [{key: "青铜"},
-          {key: "白银"},
-          {key: "黄金"},
-          {key: "铂金"},
-          {key: "钻石"}
+        statusList: [
+          {text: "待商谈", value: 1},
+          {text: "已商谈", value: 2},
+          {text: "待签约", value: 3},
+          {text: "已签约", value: 4}
         ],
         dialogFormVisible: false,
         dialogStatus: '',
@@ -226,29 +233,28 @@
           create: this.$t('customer.create')
         },
         customerForm: {
-          cusId: "",
-          cusNo: "",
-          cusName: "",
-          cusPhone: "",
-          cusAddr: "",
-          cusUrl: "",
-          cusLevel: "",
-          cusCredit: ""
+          customerID: "",
+          customerName: "",
+          customerPhone: "",
+          customerAddress: "",
+          customerUrl: "",
+          customerType: "",
+          customerStatus: ""
         },
         customerSelectOptions: [
-          {key: "客户编号", value: "cusNo"},
-          {key: "客户名称", value: "cusName"},
-          {key: "联系方式", value: "cusPhone"},
-          {key: "联系地址", value: "cusAddr"},
-          {key: "官方网址", value: "cusUrl"},
+          {key: "客户编号", value: "customerID"},
+          {key: "客户名称", value: "customerName"},
+          {key: "联系方式", value: "customerPhone"},
+          {key: "联系地址", value: "customerAddress"},
+          {key: "官方网址", value: "customerUrl"},
           // {key: "合作等级", value: "cusLevel"},
           // {key: "信用等级", value: "cusCredit"}
         ],
         customerRules: {
           // cusId:"",
-          cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
-          cusName: [{required: true, trigger: 'blur', validator: validateCusName}],
-          cusPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
+          // cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
+          customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
+          customerPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
           // cusAddr: "",
           // cusUrl: "",
           // cusLevel: "",
@@ -268,8 +274,8 @@
         }, queryItems: {
           selectKey: '',
           selectValue: '',
-          selectLevel: '',
-          selectCredit: ''
+          selectType: '',
+          selectStatus: ''
         },
         tableData: [],
         tableHeader: []
@@ -305,8 +311,8 @@
       },
       export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['序号', '客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '合作等级', '客户信用']
-          const filterVal = ['cusId', 'cusNo', 'cusName', 'cusPhone', 'cusAddr', 'cusUrl', 'cusLevel', 'cusCredit']
+          const tHeader = ['客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '客户类型', '客户状态']
+          const filterVal = ['customerID', 'customerName', 'customerPhone', 'customerAddress', 'customerUrl', 'customerType', 'customerStatus']
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填
@@ -386,23 +392,30 @@
       handleFilter() {
         this.pageQueryDTO.columnsName = []
         this.pageQueryDTO.columnsValue = []
-        if (this.queryItems.selectValue != '' || this.queryItems.selectLevel != '' || this.queryItems.selectCredit != '') {
+        if (this.queryItems.selectValue != '' || this.queryItems.selectType != '' || this.queryItems.selectStatus != '') {
           /*查询条件数据装配*/
-          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "cusLevel", "cusCredit"]
-          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectLevel, this.queryItems.selectCredit]
+          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "customerType", "customerStatus"]
+          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectType, this.queryItems.selectStatus]
         }
         this.fetchData();
       },
       resetCustomerForm() {
         /*表单数据清空*/
         this.customerForm = {
-          cusNo: "",
-          cusName: "",
-          cusPhone: "",
-          cusAddr: "",
-          cusUrl: "",
-          cusLevel: "",
-          cusCredit: ""
+          customerID: "",
+          customerName: "",
+          customerPhone: "",
+          customerAddress: "",
+          customerUrl: "",
+          customerType: "",
+          customerStatus: ""
+          // cusNo: "",
+          // cusName: "",
+          // cusPhone: "",
+          // cusAddr: "",
+          // cusUrl: "",
+          // cusLevel: "",
+          // cusCredit: ""
         }
       }
     }
