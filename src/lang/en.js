@@ -18,6 +18,24 @@ export default {
     update:"Update",
     pleaseSelect:"Please select"
   },
+  contact:{
+    conID:"ContactID",
+    cusName:"CustomerName",
+    conPosition:"Position",
+    conName:"ContactName",
+    sex:"Sex",
+    phone:"Phone",
+    qq:"QQ",
+    email:"Email",
+    cusID:"CustomerID"
+  },
+  follow:{
+    folID:"FollowID",
+    cusName:"CustomerName",
+    content:"Content",
+    type:"Type",
+    cusID:"CustomerID"
+  },
   route: {
     dashboard: 'Dashboard',
     documentation: 'Documentation',
@@ -147,6 +165,7 @@ export default {
     status: 'Status',
     actions: 'Actions',
     edit: 'Edit',
+    contact: 'Contact',
     publish: 'Publish',
     draft: 'Draft',
     delete: 'Delete',

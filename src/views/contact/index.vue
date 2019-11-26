@@ -6,14 +6,6 @@
       </el-select>
       <el-input v-model="queryItems.selectValue" clearable placeholder="搜索关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
-      <el-select v-model="queryItems.selectType" placeholder="客户类型" clearable class="filter-item" style="width: 130px"
-                 @change="handleFilter">
-        <el-option v-for="item in typeList" :key="item.value" :label="item.text" :value="item.value"/>
-      </el-select>
-      <el-select v-model="queryItems.selectStatus" placeholder="客户状态" clearable style="width: 140px" class="filter-item"
-                 @change="handleFilter">
-        <el-option v-for="item in statusList" :key="item.value" :label="item.text" :value="item.value"/>
-      </el-select>
       <el-button v-waves class="filter-item" type="primary" style="margin-left: 10px;" icon="el-icon-search"
                  @click="handleFilter">
         {{ $t('table.search') }}
@@ -22,8 +14,6 @@
                  @click="handleCreate">
         {{ $t('table.add') }}
       </el-button>
-
-      <upload-excel-component class="filter-item" :on-success="handleSuccess" :before-upload="beforeUpload"/>
 
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
                  @click="handleDownload">
@@ -53,49 +43,55 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('customer.cusNo')" width="80">
+      <el-table-column align="center" :label="$t('contact.conID')" width="100">
         <template slot-scope="scope">
-          {{ scope.row.customerID }}
+          {{ scope.row.contactID }}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.conName')" width="100" align="center">
+        <template slot-scope="scope">
+          {{scope.row.contactName}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.conPosition')" width="100" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.contactPosition}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.sex')" width="50" align="center">
+        <template slot-scope="scope">
+          {{scope.row.contactSex==1?"男":"女"}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusName')" width="190">
+          <template slot-scope="scope">
+            <router-link :to="{path:'/customer/table',query:{name:scope.row.customerName}}">
+            {{ scope.row.customerName}}
+            </router-link>
+          </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.cusID')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.customerName|nameEllipsis}}
+          {{scope.row.customerID}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusPhone')" width="150" align="center">
+      <el-table-column :label="$t('contact.phone')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.customerPhone|phoneEllipsis}}
+          {{scope.row.contactPhone}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusAddr')" align="center">
+      <el-table-column :label="$t('contact.qq')" align="center">
         <template slot-scope="scope">
-          <a :href="baiduMap+scope.row.customerAddress" target="_blank">
-          {{ scope.row.customerAddress|addrEllipsis }}
-          </a>
+          {{scope.row.contactQQ}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusUrl')" width="100" align="center">
+      <el-table-column :label="$t('contact.email')" width="150" align="center">
         <template slot-scope="scope">
-          <!--<a :href="scope.row.customerUrl" target="_blank"> {{ scope.row.customerUrl|urlEllipsis }}</a>-->
-          <a :href="scope.row.customerUrl" target="_blank">进入官网</a>
+          {{scope.row.contactEmail}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusLevel')" width="80" align="center">
-        <template slot-scope="scope">
-          {{ typeList[scope.row.customerType-1].text }}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('customer.cusCredit')" width="80" align="center">
-        <template slot-scope="scope">
-          {{ statusList[scope.row.customerStatus-1].text}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button size="mini" type="primary" @click="handleContact(row)">
-            {{ $t('table.contact') }}
-          </el-button>
           <el-button size="mini" type="primary" @click="handleUpdate(row)">
             {{ $t('table.edit') }}
           </el-button>
@@ -110,35 +106,33 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-position="left" label-width="80px"
+      <el-form ref="contactForm" :rules="contactRules" :model="contactForm" label-position="left" label-width="100px"
                style="width: 400px; margin-left:150px;">
         <!--<el-form-item :label="$t('customer.cusId')" prop="cusNo">-->
         <!--<el-input v-model="customerForm.customerID"/>-->
         <!--</el-form-item>-->
-        <el-form-item :label="$t('customer.cusName')" prop="customerName">
-          <el-input v-model="customerForm.customerName"/>
+        <el-form-item :label="$t('contact.conName')" prop="contactName">
+          <el-input v-model="contactForm.contactName"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusPhone')" prop="customerPhone">
-          <el-input v-model="customerForm.customerPhone"/>
+        <el-form-item :label="$t('contact.conPosition')" prop="contactPosition">
+          <el-input v-model="contactForm.contactPosition"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusAddr')">
-          <el-input v-model="customerForm.customerAddress"/>
+        <el-form-item :label="$t('contact.sex')">
+          <el-radio v-model="contactForm.contactSex" label='1'>男</el-radio>
+          <el-radio v-model="contactForm.contactSex" label='2'>女</el-radio>
+          <!--<el-input v-model="contactForm.contactSex"/>-->
         </el-form-item>
-        <el-form-item :label="$t('customer.cusUrl')">
-          <el-input v-model="customerForm.customerUrl"/>
+        <el-form-item :label="$t('contact.cusName')">
+          <el-input v-model="contactForm.customerName"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusType')">
-          <el-select v-model="customerForm.customerType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
-            <el-option v-for="item in typeList" :key="item.value" :label="item.text"
-                       :value="item.value"/>
-          </el-select>
+        <el-form-item :label="$t('contact.phone')">
+          <el-input v-model="contactForm.contactPhone"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusStatus')">
-          <el-select v-model="customerForm.customerStatus" class="filter-item"
-                     :placeholder="$t('customer.pleaseSelect')">
-            <el-option v-for="item in statusList" :key="item.value" :label="item.text"
-                       :value="item.value"/>
-          </el-select>
+        <el-form-item :label="$t('contact.qq')">
+          <el-input v-model="contactForm.contactQQ"/>
+        </el-form-item>
+        <el-form-item :label="$t('contact.email')">
+          <el-input v-model="contactForm.contactEmail"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -156,19 +150,13 @@
 <script>
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import waves from '@/directive/waves' // waves directive
+  import waves from '@/directive/waves'
+  import customer from "../../store/modules/customer"; // waves directive
 
   export default {
     components: {Pagination, UploadExcelComponent},
     directives: {waves},
     filters: {
-      addrEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 16) {
-          return value.slice(0, 16) + '...'
-        }
-        return value
-      },
       nameEllipsis(value) {
         if (!value) return ''
         if (value.length > 11) {
@@ -182,70 +170,53 @@
           return value.slice(0, 12) + '...'
         }
         return value
-      },
-      urlEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 24) {
-          return value.slice(0, 24) + '...'
-        }
-        return value
       }
     },
     data() {
-      const validateCusPhone = (rule, value, callback) => {
+      const validateConPoistion= (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('联系电话不能为空'))
+          callback(new Error('联系人职位不能为空'))
         }
         else {
           callback()
         }
       };
-      const validateCusName = (rule, value, callback) => {
+      const validateConName = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('客户名称不能为空'))
+          callback(new Error('联系人姓名不能为空'))
         }
         else {
           callback()
         }
       };
       return {
-        baiduMap:"https://map.baidu.com/search/@12959220,4825334.5,12z?querytype=s&da_src=shareurl&wd=",
-        typeList: [
-          {text: "有意向", value: 1},
-          {text: "无意向 ", value: 2},
-          {text: "已成交", value: 3}
-        ],
-        statusList: [
-          {text: "待商谈", value: 1},
-          {text: "已商谈", value: 2},
-          {text: "待签约", value: 3},
-          {text: "已签约", value: 4}
-        ],
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
           update: this.$t('customer.update'),
           create: this.$t('customer.create')
         },
-        customerForm: {
+        contactForm: {
           customerID: "",
+          contactID: "",
           customerName: "",
-          customerPhone: "",
-          customerAddress: "",
-          customerUrl: "",
-          customerType: "",
-          customerStatus: ""
+          contactName: "",
+          contactPosition: "",
+          contactSex: "",
+          contactPhone: "",
+          contactQQ: "",
+          contactEmail: ""
         },
         customerSelectOptions: [
           {key: "客户编号", value: "customerID"},
           {key: "客户名称", value: "customerName"},
-          {key: "联系方式", value: "customerPhone"},
-          {key: "联系地址", value: "customerAddress"},
-          {key: "官方网址", value: "customerUrl"},
+          {key: "联系人编号", value: "contactID"},
+          {key: "联系人姓名", value: "contactName"},
+          {key: "联系人职位", value: "contactPosition"},
         ],
-        customerRules: {
-          customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
-          customerPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
+        contactRules: {
+          contactName: [{required: true, trigger: 'blur', validator: validateConName}],
+          contactPosition: [{required: true, trigger: 'blur', validator: validateConPoistion}],
         },
         list: null,
         allCustomerList: null,
@@ -260,20 +231,18 @@
           columnsValue: []
         }, queryItems: {
           selectKey: '',
-          selectValue: '',
-          selectType: '',
-          selectStatus: ''
+          selectValue: ''
         },
         tableData: [],
         tableHeader: []
       }
     },
     created() {
-      if(this.$route.query.name==null){
+      if(this.$route.query.id==null){
         this.fetchData()
       }else {
-        this.queryItems.selectKey="customerName"
-        this.queryItems.selectValue=this.$route.query.name;
+        this.queryItems.selectKey="customerID"
+        this.queryItems.selectValue=this.$route.query.id;
         this.handleFilter();
       }
     },
@@ -281,7 +250,7 @@
       fetchData() {
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
+        this.$store.dispatch('contact/findPageContact', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
@@ -290,22 +259,22 @@
       handleDownload() {
         /*导出数据到excel表格*/
         this.downloadLoading = true
-        this.export2Excel(this.list, 'thePageCustomer')
+        this.export2Excel(this.list, 'thePageContact')
         this.downloadLoading = false
       },
       handleDownloadAll() {
         /*导出数据到excel表格*/
         this.downloadAllLoading = true
-        this.$store.dispatch('customer/getAllCustomer', this.pageQueryDTO).then(response => {
+        this.$store.dispatch('contact/getAllContact', this.pageQueryDTO).then(response => {
           this.allCustomerList = response.data
-          this.export2Excel(this.allCustomerList, 'allCustomer')
+          this.export2Excel(this.allCustomerList, 'Contact')
           this.downloadAllLoading = false
         })
       },
       export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '客户类型', '客户状态']
-          const filterVal = ['customerID', 'customerName', 'customerPhone', 'customerAddress', 'customerUrl', 'customerType', 'customerStatus']
+          const tHeader = ['联系人编号', '客户名称', '联系人职位','联系人姓名','性别', '手机号', 'QQ', '邮箱', '客户编号']
+          const filterVal = ['contactID', 'customerName', 'contactPosition', 'contactName', 'contactSex', 'contactPhone', 'contactQQ','contactEmail','customerID']
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填
@@ -336,37 +305,35 @@
       },
       handleDelete(row) {
         /*删除数据*/
-        this.$store.dispatch('customer/deleteCustomer', row.cusId).then(response => {
+        this.$store.dispatch('contact/deleteContact', row.contactID).then(response => {
           this.fetchData()
         })
       },
       handleCreate() {
         /*打开新增数据窗口*/
-        this.resetCustomerForm()
+        this.resetContactForm()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['customerForm'].clearValidate()
+          this.$refs['contactForm'].clearValidate()
         })
       },
       handleUpdate(row) {
         /*打开编辑数据窗口*/
-        this.customerForm = Object.assign({}, row) // copy obj
+        this.contactForm = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
+        //数字转为字符串型
+        this.contactForm.contactSex=this.contactForm.contactSex+""
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['customerForm'].clearValidate()
+          this.$refs['contactForm'].clearValidate()
         })
-      },
-      handleContact(row) {
-        /*查询联系人*/
-        this.$router.push({path:'/customer/contact',query:{id:'1'}});
       },
       createData() {
         /*发送新增数据*/
-        this.$refs.customerForm.validate((valid) => {
+        this.$refs.contactForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('customer/addCustomer', this.customerForm).then(response => {
+            this.$store.dispatch('contact/addContact', this.contactForm).then(response => {
               if (response.data == "succeed") {
                 this.dialogFormVisible = false
                 this.fetchData()
@@ -377,9 +344,9 @@
       },
       updateData() {
         /*发送修改数据*/
-        this.$refs.customerForm.validate((valid) => {
+        this.$refs.contactForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('customer/updateCustomer', this.customerForm).then(response => {
+            this.$store.dispatch('contact/updateContact', this.contactForm).then(response => {
               this.dialogFormVisible = false
               this.fetchData()
             })
@@ -389,23 +356,25 @@
       handleFilter() {
         this.pageQueryDTO.columnsName = []
         this.pageQueryDTO.columnsValue = []
-        if (this.queryItems.selectValue != '' || this.queryItems.selectType != '' || this.queryItems.selectStatus != '') {
+        if (this.queryItems.selectValue != '' ) {
           /*查询条件数据装配*/
-          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "customerType", "customerStatus"]
-          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectType, this.queryItems.selectStatus]
+          this.pageQueryDTO.columnsName = [this.queryItems.selectKey]
+          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue]
         }
         this.fetchData();
       },
-      resetCustomerForm() {
+      resetContactForm() {
         /*表单数据清空*/
-        this.customerForm = {
+        this.contactForm = {
           customerID: "",
+          contactID: "",
           customerName: "",
-          customerPhone: "",
-          customerAddress: "",
-          customerUrl: "",
-          customerType: "",
-          customerStatus: ""
+          contactName: "",
+          contactPosition: "",
+          contactSex: "",
+          contactPhone: "",
+          contactQQ: "",
+          contactEmail: ""
         }
       }
     }

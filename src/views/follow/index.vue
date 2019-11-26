@@ -53,7 +53,7 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('customer.cusNo')" width="80">
+      <el-table-column :label="$t('customer.cusNo')" width="80">
         <template slot-scope="scope">
           {{ scope.row.customerID }}
         </template>
@@ -70,15 +70,12 @@
       </el-table-column>
       <el-table-column :label="$t('customer.cusAddr')" align="center">
         <template slot-scope="scope">
-          <a :href="baiduMap+scope.row.customerAddress" target="_blank">
           {{ scope.row.customerAddress|addrEllipsis }}
-          </a>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusUrl')" width="100" align="center">
+      <el-table-column :label="$t('customer.cusUrl')" width="200" align="center">
         <template slot-scope="scope">
-          <!--<a :href="scope.row.customerUrl" target="_blank"> {{ scope.row.customerUrl|urlEllipsis }}</a>-->
-          <a :href="scope.row.customerUrl" target="_blank">进入官网</a>
+          <a :href="scope.row.customerUrl" target="_blank"> {{ scope.row.customerUrl|urlEllipsis }}</a>
         </template>
       </el-table-column>
       <el-table-column :label="$t('customer.cusLevel')" width="80" align="center">
@@ -88,14 +85,11 @@
       </el-table-column>
       <el-table-column :label="$t('customer.cusCredit')" width="80" align="center">
         <template slot-scope="scope">
-          {{ statusList[scope.row.customerStatus-1].text}}
+          {{ statusList[scope.row.customerStatus-1].text }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button size="mini" type="primary" @click="handleContact(row)">
-            {{ $t('table.contact') }}
-          </el-button>
           <el-button size="mini" type="primary" @click="handleUpdate(row)">
             {{ $t('table.edit') }}
           </el-button>
@@ -192,6 +186,18 @@
       }
     },
     data() {
+      const validateCusNo = (rule, value, callback) => {
+        var numReg = /^[0-9]+$/
+        var numRe = new RegExp(numReg)
+        if (value === '') {
+          callback(new Error('客户编号不能为空'))
+        } else if (!numRe.test(value)) {
+          callback(new Error('客户编号必须为数字'))
+        }
+        else {
+          callback()
+        }
+      };
       const validateCusPhone = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('联系电话不能为空'))
@@ -209,7 +215,6 @@
         }
       };
       return {
-        baiduMap:"https://map.baidu.com/search/@12959220,4825334.5,12z?querytype=s&da_src=shareurl&wd=",
         typeList: [
           {text: "有意向", value: 1},
           {text: "无意向 ", value: 2},
@@ -242,10 +247,18 @@
           {key: "联系方式", value: "customerPhone"},
           {key: "联系地址", value: "customerAddress"},
           {key: "官方网址", value: "customerUrl"},
+          // {key: "合作等级", value: "cusLevel"},
+          // {key: "信用等级", value: "cusCredit"}
         ],
         customerRules: {
+          // cusId:"",
+          // cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
           customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
           customerPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
+          // cusAddr: "",
+          // cusUrl: "",
+          // cusLevel: "",
+          // cusCredit: ""
         },
         list: null,
         allCustomerList: null,
@@ -269,13 +282,7 @@
       }
     },
     created() {
-      if(this.$route.query.name==null){
-        this.fetchData()
-      }else {
-        this.queryItems.selectKey="customerName"
-        this.queryItems.selectValue=this.$route.query.name;
-        this.handleFilter();
-      }
+      this.fetchData()
     },
     methods: {
       fetchData() {
@@ -358,10 +365,6 @@
           this.$refs['customerForm'].clearValidate()
         })
       },
-      handleContact(row) {
-        /*查询联系人*/
-        this.$router.push({path:'/customer/contact',query:{id:'1'}});
-      },
       createData() {
         /*发送新增数据*/
         this.$refs.customerForm.validate((valid) => {
@@ -406,6 +409,13 @@
           customerUrl: "",
           customerType: "",
           customerStatus: ""
+          // cusNo: "",
+          // cusName: "",
+          // cusPhone: "",
+          // cusAddr: "",
+          // cusUrl: "",
+          // cusLevel: "",
+          // cusCredit: ""
         }
       }
     }

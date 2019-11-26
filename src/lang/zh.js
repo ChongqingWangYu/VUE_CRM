@@ -9,7 +9,7 @@ export default {
     cusName:"客户名称",
     cusPhone:"联系方式",
     cusAddr:"联系地址",
-    cusUrl:"官方网址",
+    cusUrl:"官方网站",
     cusLevel:"合作等级",
     cusType:"客户类型",
     cusCredit:"客户信用",
@@ -18,6 +18,24 @@ export default {
     update:"更新客户信息",
     edit:"编辑客户信息",
     pleaseSelect:"请选择"
+  },
+  contact:{
+    conID:"联系人编号",
+    cusName:"客户名称",
+    conPosition:"联系人职位",
+    conName:"联系人姓名",
+    sex:"性别",
+    phone:"手机号",
+    qq:"QQ",
+    email:"邮箱 ",
+    cusID:"客户编号"
+  },
+  follow:{
+    folID:"跟进编号",
+    cusName:"客户名称",
+    content:"跟进内容",
+    type:"跟进类型",
+    cusID:"客户编号"
   },
   route: {
     dashboard: '首页',
@@ -152,6 +170,7 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
+    contact: '联系人',
     confirm: '确 定'
   },
   example: {
