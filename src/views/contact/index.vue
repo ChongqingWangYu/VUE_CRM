@@ -108,22 +108,28 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="contactForm" :rules="contactRules" :model="contactForm" label-position="left" label-width="100px"
                style="width: 400px; margin-left:150px;">
-        <!--<el-form-item :label="$t('customer.cusId')" prop="cusNo">-->
-        <!--<el-input v-model="customerForm.customerID"/>-->
-        <!--</el-form-item>-->
+        <el-form-item :label="$t('customer.cusId')" prop="customerID">
+          <el-input :disabled="true" v-model="contactForm.customerID"/>
+        </el-form-item>
         <el-form-item :label="$t('contact.conName')" prop="contactName">
           <el-input v-model="contactForm.contactName"/>
         </el-form-item>
         <el-form-item :label="$t('contact.conPosition')" prop="contactPosition">
           <el-input v-model="contactForm.contactPosition"/>
         </el-form-item>
+        <el-form-item :label="$t('contact.cusName')" prop="customerName">
+          <!--<el-input v-model="contactForm.customerName"/>-->
+          <el-autocomplete
+            v-model="contactForm.customerName"
+            value-key="customerName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请选择"
+            @select="handleSelectCusName"
+          ></el-autocomplete>
+        </el-form-item>
         <el-form-item :label="$t('contact.sex')">
           <el-radio v-model="contactForm.contactSex" label='1'>男</el-radio>
           <el-radio v-model="contactForm.contactSex" label='2'>女</el-radio>
-          <!--<el-input v-model="contactForm.contactSex"/>-->
-        </el-form-item>
-        <el-form-item :label="$t('contact.cusName')">
-          <el-input v-model="contactForm.customerName"/>
         </el-form-item>
         <el-form-item :label="$t('contact.phone')">
           <el-input v-model="contactForm.contactPhone"/>
@@ -188,6 +194,13 @@
         else {
           callback()
         }
+      };const validateCusName = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('客户名称不能为空'))
+        }
+        else {
+          callback()
+        }
       };
       return {
         dialogFormVisible: false,
@@ -215,6 +228,8 @@
           {key: "联系人职位", value: "contactPosition"},
         ],
         contactRules: {
+          customerID: [{required: true, trigger: 'blur', validator: validateConName}],
+          customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
           contactName: [{required: true, trigger: 'blur', validator: validateConName}],
           contactPosition: [{required: true, trigger: 'blur', validator: validateConPoistion}],
         },
@@ -245,6 +260,11 @@
         this.queryItems.selectValue=this.$route.query.id;
         this.handleFilter();
       }
+      this.pageQueryDTO.columnsName = []
+      this.pageQueryDTO.columnsValue = []
+      this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
+        this.allCustomerList = response.data.items
+      })
     },
     methods: {
       fetchData() {
@@ -255,6 +275,19 @@
           this.total = response.data.total
           this.listLoading = false
         })
+      },
+      querySearchAsync(queryString, cb) {
+        const list = this.allCustomerList;
+        const results = queryString ? list.filter(this.createCusNameFilter(queryString)) : list;
+        cb(results);
+      },
+      createCusNameFilter(queryString) {
+        return (contact) => {
+          return (contact.customerName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectCusName(item) {
+        this.contactForm.customerID = item.customerID;
       },
       handleDownload() {
         /*导出数据到excel表格*/

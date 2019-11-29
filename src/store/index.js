@@ -6,6 +6,7 @@ import settings from './modules/settings'
 import user from './modules/user'
 import customer from './modules/customer'
 import contact from './modules/contact'
+import follow from './modules/follow'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     settings,
     user,
     customer,
-    contact
+    contact,
+    follow
   },
   getters
 })

@@ -34,7 +34,8 @@ export default {
     folID:"跟进编号",
     cusName:"客户名称",
     content:"跟进内容",
-    type:"跟进类型",
+    date: '跟进时间',
+    type:"跟进方式",
     cusID:"客户编号"
   },
   route: {
@@ -171,6 +172,7 @@ export default {
     delete: '删除',
     cancel: '取 消',
     contact: '联系人',
+    follow: '跟进',
     confirm: '确 定'
   },
   example: {

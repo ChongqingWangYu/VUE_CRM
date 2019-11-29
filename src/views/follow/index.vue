@@ -2,17 +2,13 @@
   <div class="app-container">
     <div class="filter-container">
       <el-select v-model="queryItems.selectKey" placeholder="搜索字段" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in customerSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
+        <el-option v-for="item in followSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
       </el-select>
       <el-input v-model="queryItems.selectValue" clearable placeholder="搜索关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
-      <el-select v-model="queryItems.selectType" placeholder="客户类型" clearable class="filter-item" style="width: 130px"
+      <el-select v-model="queryItems.selectType" placeholder="跟进方式" clearable class="filter-item" style="width: 130px"
                  @change="handleFilter">
         <el-option v-for="item in typeList" :key="item.value" :label="item.text" :value="item.value"/>
-      </el-select>
-      <el-select v-model="queryItems.selectStatus" placeholder="客户状态" clearable style="width: 140px" class="filter-item"
-                 @change="handleFilter">
-        <el-option v-for="item in statusList" :key="item.value" :label="item.text" :value="item.value"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" style="margin-left: 10px;" icon="el-icon-search"
                  @click="handleFilter">
@@ -22,8 +18,6 @@
                  @click="handleCreate">
         {{ $t('table.add') }}
       </el-button>
-
-      <upload-excel-component class="filter-item" :on-success="handleSuccess" :before-upload="beforeUpload"/>
 
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
                  @click="handleDownload">
@@ -53,39 +47,31 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusNo')" width="80">
+      <el-table-column :label="$t('follow.folID')" width="80">
         <template slot-scope="scope">
-          {{ scope.row.customerID }}
+          {{ scope.row.followID }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusName')" width="190">
+      <el-table-column :label="$t('follow.cusName')" width="190">
         <template slot-scope="scope">
-          {{ scope.row.customerName|nameEllipsis}}
+          <router-link :to="{path:'/customer/table',query:{name:scope.row.customerName}}">
+            {{ scope.row.customerName}}
+          </router-link>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusPhone')" width="150" align="center">
+      <el-table-column :label="$t('follow.content')" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.customerPhone|phoneEllipsis}}
+          {{ scope.row.followContent}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusAddr')" align="center">
+      <el-table-column :label="$t('follow.date')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.customerAddress|addrEllipsis }}
+          {{ scope.row.followDate}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusUrl')" width="200" align="center">
+      <el-table-column :label="$t('follow.type')" width="200" align="center">
         <template slot-scope="scope">
-          <a :href="scope.row.customerUrl" target="_blank"> {{ scope.row.customerUrl|urlEllipsis }}</a>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('customer.cusLevel')" width="80" align="center">
-        <template slot-scope="scope">
-          {{ typeList[scope.row.customerType-1].text }}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('customer.cusCredit')" width="80" align="center">
-        <template slot-scope="scope">
-          {{ statusList[scope.row.customerStatus-1].text }}
+          {{ typeList[scope.row.followType-1].text}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
@@ -104,33 +90,34 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-position="left" label-width="80px"
+      <el-form ref="followForm" :rules="followRules" :model="followForm" label-position="left" label-width="80px"
                style="width: 400px; margin-left:150px;">
-        <!--<el-form-item :label="$t('customer.cusId')" prop="cusNo">-->
-        <!--<el-input v-model="customerForm.customerID"/>-->
-        <!--</el-form-item>-->
-        <el-form-item :label="$t('customer.cusName')" prop="customerName">
-          <el-input v-model="customerForm.customerName"/>
+        <el-form-item :label="$t('customer.cusId')" prop="customerID">
+          <el-input :disabled="true" v-model="followForm.customerID"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusPhone')" prop="customerPhone">
-          <el-input v-model="customerForm.customerPhone"/>
+        <el-form-item :label="$t('customer.cusName')" prop="customerID">
+          <el-autocomplete
+            v-model="followForm.customerName"
+            value-key="customerName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请选择"
+            @select="handleSelectCusName"
+          ></el-autocomplete>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusAddr')">
-          <el-input v-model="customerForm.customerAddress"/>
+        <el-form-item :label="$t('follow.content')" prop="followContent">
+          <el-input v-model="followForm.followContent"/>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusUrl')">
-          <el-input v-model="customerForm.customerUrl"/>
+        <el-form-item :label="$t('follow.date')">
+          <el-date-picker
+            v-model="followForm.followDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('customer.cusType')">
-          <el-select v-model="customerForm.customerType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
+        <el-form-item :label="$t('follow.type')">
+          <el-select v-model="followForm.followType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
             <el-option v-for="item in typeList" :key="item.value" :label="item.text"
-                       :value="item.value"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('customer.cusStatus')">
-          <el-select v-model="customerForm.customerStatus" class="filter-item"
-                     :placeholder="$t('customer.pleaseSelect')">
-            <el-option v-for="item in statusList" :key="item.value" :label="item.text"
                        :value="item.value"/>
           </el-select>
         </el-form-item>
@@ -155,76 +142,31 @@
   export default {
     components: {Pagination, UploadExcelComponent},
     directives: {waves},
-    filters: {
-      addrEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 16) {
-          return value.slice(0, 16) + '...'
-        }
-        return value
-      },
-      nameEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 11) {
-          return value.slice(0, 11) + '...'
-        }
-        return value
-      },
-      phoneEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 12) {
-          return value.slice(0, 12) + '...'
-        }
-        return value
-      },
-      urlEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 24) {
-          return value.slice(0, 24) + '...'
-        }
-        return value
-      }
-    },
     data() {
-      const validateCusNo = (rule, value, callback) => {
-        var numReg = /^[0-9]+$/
-        var numRe = new RegExp(numReg)
+      const validateFollowContent = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('客户编号不能为空'))
-        } else if (!numRe.test(value)) {
-          callback(new Error('客户编号必须为数字'))
+          callback(new Error('跟进内容不能为空'))
         }
         else {
           callback()
         }
       };
-      const validateCusPhone = (rule, value, callback) => {
+      const validateCusID = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('联系电话不能为空'))
-        }
-        else {
-          callback()
-        }
-      };
-      const validateCusName = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('客户名称不能为空'))
+          callback(new Error('请从下拉列表中选择'))
         }
         else {
           callback()
         }
       };
       return {
+        cusNameList: [{value: "cq"}, {value: "wq"}, {value: "db"}],
         typeList: [
-          {text: "有意向", value: 1},
-          {text: "无意向 ", value: 2},
-          {text: "已成交", value: 3}
-        ],
-        statusList: [
-          {text: "待商谈", value: 1},
-          {text: "已商谈", value: 2},
-          {text: "待签约", value: 3},
-          {text: "已签约", value: 4}
+          {text: "电话", value: 1},
+          {text: "短信", value: 2},
+          {text: "QQ", value: 3},
+          {text: "微信", value: 4},
+          {text: "邮箱", value: 5}
         ],
         dialogFormVisible: false,
         dialogStatus: '',
@@ -232,33 +174,25 @@
           update: this.$t('customer.update'),
           create: this.$t('customer.create')
         },
-        customerForm: {
+        followForm: {
           customerID: "",
+          followID: "",
           customerName: "",
-          customerPhone: "",
-          customerAddress: "",
-          customerUrl: "",
-          customerType: "",
-          customerStatus: ""
+          followContent: "",
+          followDate: "",
+          followType: ""
         },
-        customerSelectOptions: [
-          {key: "客户编号", value: "customerID"},
+        followSelectOptions: [
+          {key: "跟进编号", value: "followID"},
           {key: "客户名称", value: "customerName"},
-          {key: "联系方式", value: "customerPhone"},
-          {key: "联系地址", value: "customerAddress"},
-          {key: "官方网址", value: "customerUrl"},
-          // {key: "合作等级", value: "cusLevel"},
-          // {key: "信用等级", value: "cusCredit"}
+          {key: "跟进内容", value: "followContent"},
+          {key: "跟进时间", value: "followDate"},
+          {key: "跟进方式", value: "followType"},
+          {key: "客户编号", value: "customerID"}
         ],
-        customerRules: {
-          // cusId:"",
-          // cusNo: [{required: true, trigger: 'blur', validator: validateCusNo}],
-          customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
-          customerPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
-          // cusAddr: "",
-          // cusUrl: "",
-          // cusLevel: "",
-          // cusCredit: ""
+        followRules: {
+          customerID: [{required: true, trigger: 'blur', validator: validateCusID}],
+          followContent: [{required: true, trigger: 'blur', validator: validateFollowContent}],
         },
         list: null,
         allCustomerList: null,
@@ -282,37 +216,61 @@
       }
     },
     created() {
-      this.fetchData()
+      if (this.$route.query.id == null) {
+        this.fetchData()
+      } else {
+        this.queryItems.selectKey = "customerID"
+        this.queryItems.selectValue = this.$route.query.id;
+        this.handleFilter();
+      }
+      this.pageQueryDTO.columnsName = []
+      this.pageQueryDTO.columnsValue = []
+      this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
+        this.allCustomerList = response.data.items
+      })
     },
     methods: {
       fetchData() {
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
+        this.$store.dispatch('follow/findPageFollow', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
         })
       },
+      querySearchAsync(queryString, cb) {
+        const list = this.allCustomerList;
+        const results = queryString ? list.filter(this.createCusNameFilter(queryString)) : list;
+        cb(results);
+      },
+      createCusNameFilter(queryString) {
+        return (customer) => {
+          return (customer.customerName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectCusName(item) {
+        this.followForm.customerID = item.customerID;
+      },
       handleDownload() {
         /*导出数据到excel表格*/
         this.downloadLoading = true
-        this.export2Excel(this.list, 'thePageCustomer')
+        this.export2Excel(this.list, 'thePageFollow')
         this.downloadLoading = false
       },
       handleDownloadAll() {
         /*导出数据到excel表格*/
         this.downloadAllLoading = true
-        this.$store.dispatch('customer/getAllCustomer', this.pageQueryDTO).then(response => {
-          this.allCustomerList = response.data
-          this.export2Excel(this.allCustomerList, 'allCustomer')
+        this.$store.dispatch('follow/getAllFollow', this.pageQueryDTO).then(response => {
+          this.allFollowList = response.data
+          this.export2Excel(this.allFollowList, 'allFollow')
           this.downloadAllLoading = false
         })
       },
       export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['客户编号', '客户名称', '联系方式', '联系地址', '官方网址', '客户类型', '客户状态']
-          const filterVal = ['customerID', 'customerName', 'customerPhone', 'customerAddress', 'customerUrl', 'customerType', 'customerStatus']
+          const tHeader = ['跟进编号', '客户名称', '跟进内容', '跟进时间', '跟进方式', '客户编号']
+          const filterVal = ['followID', 'customerName', 'followContent', 'followDate', 'followType', 'customerID']
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填
@@ -343,33 +301,33 @@
       },
       handleDelete(row) {
         /*删除数据*/
-        this.$store.dispatch('customer/deleteCustomer', row.cusId).then(response => {
+        this.$store.dispatch('follow/deleteFollow', row.followID).then(response => {
           this.fetchData()
         })
       },
       handleCreate() {
         /*打开新增数据窗口*/
-        this.resetCustomerForm()
+        this.resetFollowForm()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['customerForm'].clearValidate()
+          this.$refs['followForm'].clearValidate()
         })
       },
       handleUpdate(row) {
         /*打开编辑数据窗口*/
-        this.customerForm = Object.assign({}, row) // copy obj
+        this.followForm = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['customerForm'].clearValidate()
+          this.$refs['followForm'].clearValidate()
         })
       },
       createData() {
         /*发送新增数据*/
-        this.$refs.customerForm.validate((valid) => {
+        this.$refs.followForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('customer/addCustomer', this.customerForm).then(response => {
+            this.$store.dispatch('follow/addFollow', this.followForm).then(response => {
               if (response.data == "succeed") {
                 this.dialogFormVisible = false
                 this.fetchData()
@@ -380,9 +338,9 @@
       },
       updateData() {
         /*发送修改数据*/
-        this.$refs.customerForm.validate((valid) => {
+        this.$refs.followForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('customer/updateCustomer', this.customerForm).then(response => {
+            this.$store.dispatch('follow/updateFollow', this.followForm).then(response => {
               this.dialogFormVisible = false
               this.fetchData()
             })
@@ -394,28 +352,20 @@
         this.pageQueryDTO.columnsValue = []
         if (this.queryItems.selectValue != '' || this.queryItems.selectType != '' || this.queryItems.selectStatus != '') {
           /*查询条件数据装配*/
-          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "customerType", "customerStatus"]
-          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectType, this.queryItems.selectStatus]
+          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "followType"]
+          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectType]
         }
         this.fetchData();
       },
-      resetCustomerForm() {
+      resetFollowForm() {
         /*表单数据清空*/
-        this.customerForm = {
+        this.followForm = {
           customerID: "",
+          followID: "",
           customerName: "",
-          customerPhone: "",
-          customerAddress: "",
-          customerUrl: "",
-          customerType: "",
-          customerStatus: ""
-          // cusNo: "",
-          // cusName: "",
-          // cusPhone: "",
-          // cusAddr: "",
-          // cusUrl: "",
-          // cusLevel: "",
-          // cusCredit: ""
+          followContent: "",
+          followDate: "",
+          followType: ""
         }
       }
     }

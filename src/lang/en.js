@@ -33,6 +33,7 @@ export default {
     folID:"FollowID",
     cusName:"CustomerName",
     content:"Content",
+    date:"Date",
     type:"Type",
     cusID:"CustomerID"
   },
@@ -166,6 +167,7 @@ export default {
     actions: 'Actions',
     edit: 'Edit',
     contact: 'Contact',
+    follow: 'Follow',
     publish: 'Publish',
     draft: 'Draft',
     delete: 'Delete',

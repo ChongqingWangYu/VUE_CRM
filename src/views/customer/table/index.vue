@@ -91,10 +91,13 @@
           {{ statusList[scope.row.customerStatus-1].text}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button size="mini" type="primary" @click="handleContact(row)">
             {{ $t('table.contact') }}
+          </el-button>
+          <el-button size="mini" type="primary" @click="handleFollow(row)">
+            {{ $t('table.follow') }}
           </el-button>
           <el-button size="mini" type="primary" @click="handleUpdate(row)">
             {{ $t('table.edit') }}
@@ -360,7 +363,11 @@
       },
       handleContact(row) {
         /*查询联系人*/
-        this.$router.push({path:'/customer/contact',query:{id:'1'}});
+        this.$router.push({path:'/customer/contact',query:{id:row.customerID}});
+      },
+      handleFollow(row) {
+        /*查询联系人*/
+        this.$router.push({path:'/customer/follow',query:{id:row.customerID}});
       },
       createData() {
         /*发送新增数据*/
