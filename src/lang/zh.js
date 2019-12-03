@@ -1,18 +1,16 @@
 export default {
+  serialNumber:"序号",
   langselect:{
     success:'语言切换成功'
   },
   customer:{
     title:"客户",
-    cusId:"序号",
-    cusNo:"客户编号",
+    cusID:"客户编号",
     cusName:"客户名称",
     cusPhone:"联系方式",
     cusAddr:"联系地址",
     cusUrl:"官方网站",
-    cusLevel:"合作等级",
     cusType:"客户类型",
-    cusCredit:"客户信用",
     cusStatus:"客户状态",
     create:"新增客户信息",
     update:"更新客户信息",
@@ -37,6 +35,13 @@ export default {
     date: '跟进时间',
     type:"跟进方式",
     cusID:"客户编号"
+  },
+  order:{
+    ordID:"订单编号",
+    ordName:"订单名称",
+    date:"订单时间",
+    amount:"订单金额",
+    note:"订单备注",
   },
   route: {
     dashboard: '首页',

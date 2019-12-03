@@ -48,12 +48,12 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" :label="$t('customer.cusId')" width="50">
+      <el-table-column align="center" :label="$t('serialNumber')" width="50">
         <template slot-scope="scope">
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('customer.cusNo')" width="80">
+      <el-table-column align="center" :label="$t('customer.cusID')" width="80">
         <template slot-scope="scope">
           {{ scope.row.customerID }}
         </template>
@@ -81,17 +81,17 @@
           <a :href="scope.row.customerUrl" target="_blank">进入官网</a>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusLevel')" width="80" align="center">
+      <el-table-column :label="$t('customer.cusType')" width="80" align="center">
         <template slot-scope="scope">
           {{ typeList[scope.row.customerType-1].text }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('customer.cusCredit')" width="80" align="center">
+      <el-table-column :label="$t('customer.cusStatus')" width="80" align="center">
         <template slot-scope="scope">
           {{ statusList[scope.row.customerStatus-1].text}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center"  width="300"  class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button size="mini" type="primary" @click="handleContact(row)">
             {{ $t('table.contact') }}
@@ -113,7 +113,7 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-position="left" label-width="80px"
+      <el-form ref="customerForm" :rules="customerRules" :model="customerForm" label-width="80px"
                style="width: 400px; margin-left:150px;">
         <!--<el-form-item :label="$t('customer.cusId')" prop="cusNo">-->
         <!--<el-input v-model="customerForm.customerID"/>-->
@@ -247,8 +247,8 @@
           {key: "官方网址", value: "customerUrl"},
         ],
         customerRules: {
-          customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
-          customerPhone: [{required: true, trigger: 'blur', validator: validateCusPhone}],
+          customerName: [{required: true, trigger: 'change', validator: validateCusName}],
+          customerPhone: [{required: true, trigger: 'change', validator: validateCusPhone}],
         },
         list: null,
         allCustomerList: null,

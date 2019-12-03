@@ -1,54 +1,54 @@
 import request from '@/utils/request'
 
-export function findPageFollow(data) {
+export function findPageOrder(data) {
   return request({
-    url: '/follow/findPageFollow',
+    url: '/order/findPageOrder',
     method: 'post',
     data
   })
 }
-export function findFollowByCusID(data) {
+export function findOrderByCusID(data) {
   return request({
-    url: '/follow/findFollowByCusID',
+    url: '/order/findOrderByCusID',
     method: 'post',
     data
   })
 }
-export function getAllFollow() {
+export function getAllOrder() {
   return request({
-    url: '/follow/getAllFollow',
+    url: '/order/getAllOrder',
     method: 'get'
   })
 }
 
 export function uploadExcel(data) {
   return request({
-    url: '/follow/importFollowFromExcel',
+    url: '/order/importOrderFromExcel',
     headers: {'content-type': 'multipart/form-data'},
     method: 'post',
     data
   })
 }
 
-export function deleteFollow(data) {
+export function deleteOrder(data) {
   return request({
-    url: '/follow/deleteFollow',
+    url: '/order/deleteOrder',
     method: 'post',
     data
   })
 }
 
-export function updateFollow(data) {
+export function updateOrder(data) {
   return request({
-    url: '/follow/updateFollow',
+    url: '/order/updateOrder',
     method: 'post',
     data
   })
 }
 
-export function addFollow(data) {
+export function addOrder(data) {
   return request({
-    url: '/follow/addFollow',
+    url: '/order/addOrder',
     method: 'post',
     data
   })

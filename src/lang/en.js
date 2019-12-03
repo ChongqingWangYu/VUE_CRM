@@ -1,18 +1,16 @@
 export default {
+  serialNumber:"SerialNumber",
   langselect:{
     success:'Switch Language Success'
   },
   customer:{
     title:"Customer",
-    cusId:"ID",
-    cusNo:"Number",
+    cusID:"ID",
     cusName:"Name",
     cusPhone:"Phone",
     cusAddr:"Addr",
     cusUrl:"Url",
-    cusLevel:"Level",
     cusType:"Type",
-    cusCredit:"Credit",
     cusStatus:"Status",
     create:"Create",
     update:"Update",
@@ -36,6 +34,13 @@ export default {
     date:"Date",
     type:"Type",
     cusID:"CustomerID"
+  },
+  order:{
+    ordID:"ID",
+    ordName:"Name",
+    date:"Date",
+    amount:"Amount",
+    note:"Note",
   },
   route: {
     dashboard: 'Dashboard',

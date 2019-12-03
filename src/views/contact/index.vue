@@ -38,7 +38,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" :label="$t('customer.cusId')" width="50">
+      <el-table-column align="center" :label="$t('serialNumber')" width="50">
         <template slot-scope="scope">
           {{ scope.$index+1}}
         </template>
@@ -75,7 +75,7 @@
           {{scope.row.customerID}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('contact.phone')" align="center">
+      <el-table-column :label="$t('contact.phone')" width="120" align="center">
         <template slot-scope="scope">
           {{scope.row.contactPhone}}
         </template>
@@ -106,9 +106,9 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="contactForm" :rules="contactRules" :model="contactForm" label-position="left" label-width="100px"
+      <el-form ref="contactForm" :rules="contactRules" :model="contactForm" label-width="100px"
                style="width: 400px; margin-left:150px;">
-        <el-form-item :label="$t('customer.cusId')" prop="customerID">
+        <el-form-item :label="$t('customer.cusID')" prop="customerID">
           <el-input :disabled="true" v-model="contactForm.customerID"/>
         </el-form-item>
         <el-form-item :label="$t('contact.conName')" prop="contactName">
@@ -225,13 +225,15 @@
           {key: "客户名称", value: "customerName"},
           {key: "联系人编号", value: "contactID"},
           {key: "联系人姓名", value: "contactName"},
-          {key: "联系人职位", value: "contactPosition"},
+          {key: "QQ号", value: "contactQQ"},
+          {key: "邮箱", value: "contactEmail"},
+          {key: "手机号", value: "contactPhone"}
         ],
         contactRules: {
-          customerID: [{required: true, trigger: 'blur', validator: validateConName}],
-          customerName: [{required: true, trigger: 'blur', validator: validateCusName}],
-          contactName: [{required: true, trigger: 'blur', validator: validateConName}],
-          contactPosition: [{required: true, trigger: 'blur', validator: validateConPoistion}],
+          customerID: [{required: true, trigger: 'change', validator: validateConName}],
+          customerName: [{required: true, trigger: 'change', validator: validateCusName}],
+          contactName: [{required: true, trigger: 'change', validator: validateConName}],
+          contactPosition: [{required: true, trigger: 'change', validator: validateConPoistion}],
         },
         list: null,
         allCustomerList: null,
@@ -256,9 +258,7 @@
       if(this.$route.query.id==null){
         this.fetchData()
       }else {
-        this.queryItems.selectKey="customerID"
-        this.queryItems.selectValue=this.$route.query.id;
-        this.handleFilter();
+        this.findContactByCusID(this.$route.query.id);
       }
       this.pageQueryDTO.columnsName = []
       this.pageQueryDTO.columnsValue = []
@@ -273,6 +273,14 @@
         this.$store.dispatch('contact/findPageContact', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
+          this.listLoading = false
+        })
+      },
+      findContactByCusID(cusID) {
+        /*从后台获取数据*/
+        this.listLoading = true
+        this.$store.dispatch('contact/findContactByCusID', cusID).then(response => {
+          this.list = response.data
           this.listLoading = false
         })
       },

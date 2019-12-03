@@ -4,7 +4,8 @@ import {
   findPageContact,
   getAllContact,
   updateContact,
-  uploadExcel
+  uploadExcel,
+  findContactByCusID
 } from '@/api/contact'
 import {Msg} from '@/utils/message'
 import qs from 'qs'
@@ -47,6 +48,18 @@ const actions = {
           Msg.error(response.message);
         }
         resolve();
+      }).catch(error => {
+        console.log(error);
+        reject(error);
+      })
+    })
+  },
+  findContactByCusID({}, id) {
+    var json = {cusID: id}
+    json = qs.stringify(json)
+    return new Promise((resolve, reject) => {
+      findContactByCusID(json).then(response => {
+        resolve(response);
       }).catch(error => {
         console.log(error);
         reject(error);

@@ -7,6 +7,7 @@ import user from './modules/user'
 import customer from './modules/customer'
 import contact from './modules/contact'
 import follow from './modules/follow'
+import order from './modules/order'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ const store = new Vuex.Store({
     user,
     customer,
     contact,
-    follow
+    follow,
+    order
   },
   getters
 })

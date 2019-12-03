@@ -76,13 +76,19 @@ export const constantRoutes = [
         path: 'contact',
         name: 'Contact',
         component: () => import('@/views/contact/index'),
-        meta: { title: '联系人列表', icon: 'table' }
+        meta: { title: '联系人列表', icon: 'peoples' }
       },
       {
         path: 'follow',
         name: 'Follow',
         component: () => import('@/views/follow/index'),
-        meta: { title: '跟进列表', icon: 'table' }
+        meta: { title: '跟进列表', icon: 'guide' }
+      },
+      {
+        path: 'order',
+        name: 'Order',
+        component: () => import('@/views/orderForm/index'),
+        meta: { title: '订单列表', icon: 'form' }
       },
       {
         path: 'MixChart',

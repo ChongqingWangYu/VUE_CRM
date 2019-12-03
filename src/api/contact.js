@@ -23,6 +23,14 @@ export function uploadExcel(data) {
   })
 }
 
+export function findContactByCusID(data) {
+  return request({
+    url: '/contact/findContactByCusID',
+    method: 'post',
+    data
+  })
+}
+
 export function deleteContact(data) {
   return request({
     url: '/contact/deleteContact',
