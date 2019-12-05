@@ -12,6 +12,7 @@ export default {
     cusUrl:"官方网站",
     cusType:"客户类型",
     cusStatus:"客户状态",
+    date:"录入时间",
     create:"新增客户信息",
     update:"更新客户信息",
     edit:"编辑客户信息",
@@ -25,7 +26,8 @@ export default {
     sex:"性别",
     phone:"手机号",
     qq:"QQ",
-    email:"邮箱 ",
+    email:"邮箱",
+    date:"录入时间",
     cusID:"客户编号"
   },
   follow:{

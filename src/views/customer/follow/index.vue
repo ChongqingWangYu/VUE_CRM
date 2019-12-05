@@ -6,6 +6,10 @@
       </el-select>
       <el-input v-model="queryItems.selectValue" clearable placeholder="搜索关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
+      <el-select v-model="queryItems.selectType" placeholder="跟进方式" clearable class="filter-item" style="width: 130px"
+                 @change="handleFilter">
+        <el-option v-for="item in typeList" :key="item.value" :label="item.text" :value="item.value"/>
+      </el-select>
       <el-button v-waves class="filter-item" type="primary" style="margin-left: 10px;" icon="el-icon-search"
                  @click="handleFilter">
         {{ $t('table.search') }}
@@ -43,11 +47,11 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('order.ordID')" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.orderID }}
-        </template>
-      </el-table-column>
+      <!--<el-table-column  align="center" :label="$t('follow.folID')" width="80">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.followID }}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column :label="$t('follow.cusName')" width="190">
         <template slot-scope="scope">
           <router-link :to="{path:'/customer/table',query:{name:scope.row.customerName}}">
@@ -55,39 +59,34 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('contact.conName')">
+      <el-table-column :label="$t('follow.content')" width="150" align="center">
         <template slot-scope="scope">
-          {{ scope.row.contactName }}
+          {{ scope.row.followContent}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('contact.conPosition')">
+      <el-table-column :label="$t('follow.date')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.contactPosition }}
+          {{ scope.row.followDate}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('contact.phone')" width="120">
+      <el-table-column :label="$t('follow.type')" width="200" align="center">
         <template slot-scope="scope">
-          {{ scope.row.contactPhone }}
+          {{ typeList[scope.row.followType-1].text}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('order.ordName')" width="190">
+      <el-table-column :label="$t('contact.conName')" align="center">
         <template slot-scope="scope">
-          {{ scope.row.orderName}}
+          {{ scope.row.contactName}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('order.date')" align="center">
+      <el-table-column :label="$t('contact.conPosition')" width="100" align="center">
         <template slot-scope="scope">
-          {{ scope.row.orderDate}}
+          {{ scope.row.contactPosition}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('order.amount')" align="center">
+      <el-table-column :label="$t('contact.phone')"  width="120" align="center">
         <template slot-scope="scope">
-          {{ scope.row.orderAmount}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('order.note')" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.orderNote}}
+          {{scope.row.contactPhone}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
@@ -106,16 +105,15 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="orderForm" :rules="followRules" :model="orderForm" label-width="100px"
+      <el-form ref="followForm" :rules="followRules" :model="followForm" label-width="100px"
                style="width: 400px; margin-left:150px;">
-
-        <!--<el-form-item :label="$t('order.ordID')" prop="customerID">-->
-        <!--<el-input :disabled="true" v-model="orderForm.orderID"/>-->
+        <!--<el-form-item :label="$t('customer.cusID')" prop="customerID">-->
+          <!--<el-input :disabled="true" v-model="followForm.customerID"/>-->
         <!--</el-form-item>-->
 
         <el-form-item :label="$t('customer.cusName')" prop="customerID">
           <el-autocomplete
-            v-model="orderForm.customerName"
+            v-model="followForm.customerName"
             value-key="customerName"
             :fetch-suggestions="customerQuerySearchAsync"
             placeholder="请选择"
@@ -125,7 +123,7 @@
 
         <el-form-item :label="$t('contact.conName')" prop="contactID">
           <el-autocomplete
-            v-model="orderForm.contactName"
+            v-model="followForm.contactName"
             value-key="contactName"
             :fetch-suggestions="contactQuerySearchAsync"
             placeholder="请选择"
@@ -133,22 +131,22 @@
           ></el-autocomplete>
         </el-form-item>
 
-        <el-form-item :label="$t('order.date')">
+        <el-form-item :label="$t('follow.content')" prop="followContent">
+          <el-input v-model="followForm.followContent"/>
+        </el-form-item>
+        <el-form-item :label="$t('follow.date')">
           <el-date-picker
-            v-model="orderForm.orderDate"
+            v-model="followForm.followDate"
             value-format="yyyy-MM-dd"
             type="date"
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('order.ordName')" prop="ordName">
-          <el-input v-model="orderForm.orderName"/>
-        </el-form-item>
-        <el-form-item :label="$t('order.amount')" prop="ordAmount">
-          <el-input v-model="orderForm.orderAmount"/>
-        </el-form-item>
-        <el-form-item :label="$t('order.note')">
-          <el-input v-model="orderForm.orderNote"/>
+        <el-form-item :label="$t('follow.type')">
+          <el-select v-model="followForm.followType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
+            <el-option v-for="item in typeList" :key="item.value" :label="item.text"
+                       :value="item.value"/>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -197,23 +195,29 @@
         }
       };
       return {
+        cusNameList: [{value: "cq"}, {value: "wq"}, {value: "db"}],
+        typeList: [
+          {text: "电话", value: 1},
+          {text: "短信", value: 2},
+          {text: "QQ", value: 3},
+          {text: "微信", value: 4},
+          {text: "邮箱", value: 5}
+        ],
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
           update: this.$t('customer.update'),
           create: this.$t('customer.create')
         },
-        orderForm: {
+        followForm: {
           customerID: "",
-          orderID: "",
-          orderName: "",
-          orderDate: "",
-          orderAmount: "",
-          orderNote: "",
-          contactID: "",
+          followID: "",
           customerName: "",
-          contactName: "",
-          contactPosition: ""
+          followContent: "",
+          followDate: "",
+          followType: "",
+          contactID:"",
+          contactName:""
         },
         followSelectOptions: [
           {key: "跟进编号", value: "followID"},
@@ -257,7 +261,7 @@
       if (this.$route.query.id == null) {
         this.fetchData()
       } else {
-        this.findOrderByCusID(this.$route.query.id);
+        this.findFollowByCusID(this.$route.query.id);
       }
       this.pageQueryDTO.columnsName = []
       this.pageQueryDTO.columnsValue = []
@@ -267,18 +271,20 @@
     },
     methods: {
       fetchData() {
+        this.pageQueryDTO.columnsName = []
+        this.pageQueryDTO.columnsValue = []
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('order/findPageOrder', this.pageQueryDTO).then(response => {
+        this.$store.dispatch('follow/findPageFollow', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
         })
       },
-      findOrderByCusID(cusID) {
+      findFollowByCusID(cusID) {
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('order/findOrderByCusID', cusID).then(response => {
+        this.$store.dispatch('follow/findFollowByCusID', cusID).then(response => {
           this.list = response.data
           this.listLoading = false
         })
@@ -294,25 +300,27 @@
         cb(results);
       },
       createCusNameFilter(queryString) {
-        return (orderForm) => {
-          return (orderForm.customerName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (customer) => {
+          return (customer.customerName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       handleSelectCusName(item) {
         //设置跟进公司的ID
-        this.orderForm.customerID = item.customerID;
-        this.orderForm.contactName = "";
-        this.orderForm.contactID = "";
+        this.followForm.customerID = item.customerID;
+        this.followForm.contactName = "";
+        this.followForm.contactID = "";
         //查询此公司的联系人
-        this.pageQueryDTO.columnsName = "contact.customerID";
-        this.pageQueryDTO.columnsValue = item.customerID;
+        this.pageQueryDTO.columnsName="contact.customerID";
+        this.pageQueryDTO.columnsValue=item.customerID;
         this.$store.dispatch('contact/findPageContact', this.pageQueryDTO).then(response => {
-          this.allContactList = response.data.items
+          if (response.data.total != 0) {
+            this.allContactList = response.data.items
+          }
         })
 
       },
-      handleSelectConName(item) {
-        this.orderForm.contactID = item.contactID;
+      handleSelectConName(item){
+        this.followForm.contactID = item.contactID;
       },
       handleDownload() {
         /*导出数据到excel表格*/
@@ -331,8 +339,8 @@
       },
       export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['订单编号', '客户名称', '联系人姓名', '联系人职位', '手机号', '订单名称', '订单时间', '订单金额', '订单备注']
-          const filterVal = ['orderID','customerName', 'contactName', 'contactPosition', 'contactPhone', 'orderName', 'orderDate', 'orderAmount', 'orderNote']
+          const tHeader = ['跟进编号', '客户名称', '跟进内容', '跟进时间', '跟进方式', '客户编号','联系人姓名','联系人职位','手机号']
+          const filterVal = ['followID', 'customerName', 'followContent', 'followDate', 'followType', 'customerID','contactName','contactPosition','contactPhone']
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填
@@ -363,33 +371,33 @@
       },
       handleDelete(row) {
         /*删除数据*/
-        this.$store.dispatch('order/deleteOrder', row.orderID).then(response => {
+        this.$store.dispatch('follow/deleteFollow', row.followID).then(response => {
           this.fetchData()
         })
       },
       handleCreate() {
         /*打开新增数据窗口*/
-        this.resetOrderForm()
+        this.resetFollowForm()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['orderForm'].clearValidate()
+          this.$refs['followForm'].clearValidate()
         })
       },
       handleUpdate(row) {
         /*打开编辑数据窗口*/
-        this.orderForm = Object.assign({}, row) // copy obj
+        this.followForm = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['orderForm'].clearValidate()
+          this.$refs['followForm'].clearValidate()
         })
       },
       createData() {
         /*发送新增数据*/
-        this.$refs.orderForm.validate((valid) => {
+        this.$refs.followForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('order/addOrder', this.orderForm).then(response => {
+            this.$store.dispatch('follow/addFollow', this.followForm).then(response => {
               if (response.data == "succeed") {
                 this.dialogFormVisible = false
                 this.fetchData()
@@ -400,9 +408,9 @@
       },
       updateData() {
         /*发送修改数据*/
-        this.$refs.orderForm.validate((valid) => {
+        this.$refs.followForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('order/updateOrder', this.orderForm).then(response => {
+            this.$store.dispatch('follow/updateFollow', this.followForm).then(response => {
               this.dialogFormVisible = false
               this.fetchData()
             })
@@ -419,19 +427,17 @@
         }
         this.fetchData();
       },
-      resetOrderForm() {
+      resetFollowForm() {
         /*表单数据清空*/
-        this.orderForm = {
+        this.followForm = {
           customerID: "",
-          orderID: "",
-          orderName: "",
-          orderDate: "",
-          orderAmount: "",
-          orderNote: "",
-          contactID: "",
+          followID: "",
           customerName: "",
-          contactName: "",
-          contactPosition: ""
+          followContent: "",
+          followDate: "",
+          followType: "",
+          contactID:"",
+          contactName:""
         }
       }
     }

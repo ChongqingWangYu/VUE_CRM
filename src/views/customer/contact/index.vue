@@ -2,14 +2,10 @@
   <div class="app-container">
     <div class="filter-container">
       <el-select v-model="queryItems.selectKey" placeholder="搜索字段" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in followSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
+        <el-option v-for="item in customerSelectOptions" :key="item.key" :label="item.key" :value="item.value"/>
       </el-select>
       <el-input v-model="queryItems.selectValue" clearable placeholder="搜索关键字" style="width: 200px;" class="filter-item"
                 @keyup.enter.native="handleFilter"/>
-      <el-select v-model="queryItems.selectType" placeholder="跟进方式" clearable class="filter-item" style="width: 130px"
-                 @change="handleFilter">
-        <el-option v-for="item in typeList" :key="item.value" :label="item.text" :value="item.value"/>
-      </el-select>
       <el-button v-waves class="filter-item" type="primary" style="margin-left: 10px;" icon="el-icon-search"
                  @click="handleFilter">
         {{ $t('table.search') }}
@@ -47,36 +43,23 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column  align="center" :label="$t('follow.folID')" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.followID }}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('follow.cusName')" width="190">
+      <!--<el-table-column align="center" :label="$t('contact.conID')" width="100">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.contactID }}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+
+      <el-table-column :label="$t('customer.cusName')" width="190">
         <template slot-scope="scope">
           <router-link :to="{path:'/customer/table',query:{name:scope.row.customerName}}">
             {{ scope.row.customerName}}
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('follow.content')" width="150" align="center">
+
+      <el-table-column :label="$t('contact.conName')" width="100" align="center">
         <template slot-scope="scope">
-          {{ scope.row.followContent}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('follow.date')" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.followDate}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('follow.type')" width="200" align="center">
-        <template slot-scope="scope">
-          {{ typeList[scope.row.followType-1].text}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('contact.conName')" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.contactName}}
+          {{scope.row.contactName}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('contact.conPosition')" width="100" align="center">
@@ -84,9 +67,34 @@
           {{ scope.row.contactPosition}}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('contact.phone')"  width="120" align="center">
+      <el-table-column :label="$t('contact.sex')" width="50" align="center">
+        <template slot-scope="scope">
+          {{scope.row.contactSex==1?"男":"女"}}
+        </template>
+      </el-table-column>
+      <!--<el-table-column :label="$t('contact.cusID')" align="center">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{scope.row.customerID}}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <el-table-column :label="$t('contact.phone')" width="120" align="center">
         <template slot-scope="scope">
           {{scope.row.contactPhone}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.qq')" align="center">
+        <template slot-scope="scope">
+          {{scope.row.contactQQ}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.email')" width="150" align="center">
+        <template slot-scope="scope">
+          {{scope.row.contactEmail}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.date')" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.contactDate}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="180" class-name="small-padding fixed-width">
@@ -105,48 +113,47 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="followForm" :rules="followRules" :model="followForm" label-width="100px"
+      <el-form ref="contactForm" :rules="contactRules" :model="contactForm" label-width="100px"
                style="width: 400px; margin-left:150px;">
-        <!--<el-form-item :label="$t('customer.cusID')" prop="customerID">-->
-          <!--<el-input :disabled="true" v-model="followForm.customerID"/>-->
-        <!--</el-form-item>-->
-
-        <el-form-item :label="$t('customer.cusName')" prop="customerID">
+        <el-form-item :label="$t('customer.cusID')" prop="customerID">
+          <el-input :disabled="true" v-model="contactForm.customerID"/>
+        </el-form-item>
+        <el-form-item :label="$t('contact.conName')" prop="contactName">
+          <el-input v-model="contactForm.contactName"/>
+        </el-form-item>
+        <el-form-item :label="$t('contact.conPosition')" prop="contactPosition">
+          <el-input v-model="contactForm.contactPosition"/>
+        </el-form-item>
+        <el-form-item :label="$t('contact.cusName')" prop="customerName">
+          <!--<el-input v-model="contactForm.customerName"/>-->
           <el-autocomplete
-            v-model="followForm.customerName"
+            v-model="contactForm.customerName"
             value-key="customerName"
-            :fetch-suggestions="customerQuerySearchAsync"
+            :fetch-suggestions="querySearchAsync"
             placeholder="请选择"
             @select="handleSelectCusName"
           ></el-autocomplete>
         </el-form-item>
-
-        <el-form-item :label="$t('contact.conName')" prop="contactID">
-          <el-autocomplete
-            v-model="followForm.contactName"
-            value-key="contactName"
-            :fetch-suggestions="contactQuerySearchAsync"
-            placeholder="请选择"
-            @select="handleSelectConName"
-          ></el-autocomplete>
+        <el-form-item :label="$t('contact.sex')">
+          <el-radio v-model="contactForm.contactSex" label='1'>男</el-radio>
+          <el-radio v-model="contactForm.contactSex" label='2'>女</el-radio>
         </el-form-item>
-
-        <el-form-item :label="$t('follow.content')" prop="followContent">
-          <el-input v-model="followForm.followContent"/>
+        <el-form-item :label="$t('contact.phone')">
+          <el-input v-model="contactForm.contactPhone"/>
         </el-form-item>
-        <el-form-item :label="$t('follow.date')">
+        <el-form-item :label="$t('contact.qq')">
+          <el-input v-model="contactForm.contactQQ"/>
+        </el-form-item>
+        <el-form-item :label="$t('contact.email')">
+          <el-input v-model="contactForm.contactEmail"/>
+        </el-form-item>
+        <el-form-item :label="$t('contact.date')">
           <el-date-picker
-            v-model="followForm.followDate"
+            v-model="contactForm.contactDate"
             value-format="yyyy-MM-dd"
             type="date"
             placeholder="选择日期">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item :label="$t('follow.type')">
-          <el-select v-model="followForm.followType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
-            <el-option v-for="item in typeList" :key="item.value" :label="item.text"
-                       :value="item.value"/>
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -164,80 +171,88 @@
 <script>
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
   import UploadExcelComponent from '@/components/UploadExcel/index.vue'
-  import waves from '@/directive/waves' // waves directive
+  import waves from '@/directive/waves'
+  import customer from "../../../store/modules/customer"; // waves directive
 
   export default {
     components: {Pagination, UploadExcelComponent},
     directives: {waves},
+    filters: {
+      nameEllipsis(value) {
+        if (!value) return ''
+        if (value.length > 11) {
+          return value.slice(0, 11) + '...'
+        }
+        return value
+      },
+      phoneEllipsis(value) {
+        if (!value) return ''
+        if (value.length > 12) {
+          return value.slice(0, 12) + '...'
+        }
+        return value
+      }
+    },
     data() {
-      const validateFollowContent = (rule, value, callback) => {
+      const validateConPoistion= (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('跟进内容不能为空'))
+          callback(new Error('联系人职位不能为空'))
         }
         else {
           callback()
         }
       };
-      const validateCusID = (rule, value, callback) => {
+      const validateConName = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请从下拉列表中选择客户公司'))
+          callback(new Error('联系人姓名不能为空'))
         }
         else {
           callback()
         }
-      };
-      const validateConID = (rule, value, callback) => {
+      };const validateCusName = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请从下拉列表中选择联系人名称'))
+          callback(new Error('客户名称不能为空'))
         }
         else {
           callback()
         }
       };
       return {
-        cusNameList: [{value: "cq"}, {value: "wq"}, {value: "db"}],
-        typeList: [
-          {text: "电话", value: 1},
-          {text: "短信", value: 2},
-          {text: "QQ", value: 3},
-          {text: "微信", value: 4},
-          {text: "邮箱", value: 5}
-        ],
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
           update: this.$t('customer.update'),
           create: this.$t('customer.create')
         },
-        followForm: {
+        contactForm: {
           customerID: "",
-          followID: "",
+          contactID: "",
           customerName: "",
-          followContent: "",
-          followDate: "",
-          followType: "",
-          contactID:"",
-          contactName:""
+          contactName: "",
+          contactPosition: "",
+          contactSex: "",
+          contactPhone: "",
+          contactQQ: "",
+          contactEmail: "",
+          contactDate:""
         },
-        followSelectOptions: [
-          {key: "跟进编号", value: "followID"},
-          {key: "客户名称", value: "customerName"},
-          {key: "跟进内容", value: "followContent"},
-          {key: "跟进时间", value: "followDate"},
-          {key: "跟进方式", value: "followType"},
+        customerSelectOptions: [
           {key: "客户编号", value: "customerID"},
+          {key: "客户名称", value: "customerName"},
+          {key: "联系人编号", value: "contactID"},
           {key: "联系人姓名", value: "contactName"},
-          {key: "联系人职位", value: "contactPosition"},
+          {key: "QQ号", value: "contactQQ"},
+          {key: "邮箱", value: "contactEmail"},
           {key: "手机号", value: "contactPhone"}
         ],
-        followRules: {
-          customerID: [{required: true, trigger: 'change', validator: validateCusID}],
-          contactID: [{required: true, trigger: 'change', validator: validateConID}],
-          followContent: [{required: true, trigger: 'change', validator: validateFollowContent}]
+        contactRules: {
+          customerID: [{required: true, trigger: 'change', validator: validateConName}],
+          customerName: [{required: true, trigger: 'change', validator: validateCusName}],
+          contactName: [{required: true, trigger: 'change', validator: validateConName}],
+          contactPosition: [{required: true, trigger: 'change', validator: validateConPoistion}],
         },
         list: null,
         allCustomerList: null,
-        allContactList: null,
         total: 0,
         listLoading: true,
         downloadLoading: false,
@@ -249,19 +264,17 @@
           columnsValue: []
         }, queryItems: {
           selectKey: '',
-          selectValue: '',
-          selectType: '',
-          selectStatus: ''
+          selectValue: ''
         },
         tableData: [],
         tableHeader: []
       }
     },
     created() {
-      if (this.$route.query.id == null) {
+      if(this.$route.query.id==null){
         this.fetchData()
-      } else {
-        this.findFollowByCusID(this.$route.query.id);
+      }else {
+        this.findContactByCusID(this.$route.query.id);
       }
       this.pageQueryDTO.columnsName = []
       this.pageQueryDTO.columnsValue = []
@@ -271,72 +284,56 @@
     },
     methods: {
       fetchData() {
+        this.pageQueryDTO.columnsName = []
+        this.pageQueryDTO.columnsValue = []
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('follow/findPageFollow', this.pageQueryDTO).then(response => {
+        this.$store.dispatch('contact/findPageContact', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
         })
       },
-      findFollowByCusID(cusID) {
+      findContactByCusID(cusID) {
         /*从后台获取数据*/
         this.listLoading = true
-        this.$store.dispatch('follow/findFollowByCusID', cusID).then(response => {
+        this.$store.dispatch('contact/findContactByCusID', cusID).then(response => {
           this.list = response.data
           this.listLoading = false
         })
       },
-      customerQuerySearchAsync(queryString, cb) {
+      querySearchAsync(queryString, cb) {
         const list = this.allCustomerList;
         const results = queryString ? list.filter(this.createCusNameFilter(queryString)) : list;
         cb(results);
       },
-      contactQuerySearchAsync(queryString, cb) {
-        const list = this.allContactList;
-        const results = queryString ? list.filter(this.createCusNameFilter(queryString)) : list;
-        cb(results);
-      },
       createCusNameFilter(queryString) {
-        return (customer) => {
-          return (customer.customerName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (contact) => {
+          return (contact.customerName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       handleSelectCusName(item) {
-        //设置跟进公司的ID
-        this.followForm.customerID = item.customerID;
-        this.followForm.contactName = "";
-        this.followForm.contactID = "";
-        //查询此公司的联系人
-        this.pageQueryDTO.columnsName="contact.customerID";
-        this.pageQueryDTO.columnsValue=item.customerID;
-        this.$store.dispatch('contact/findPageContact', this.pageQueryDTO).then(response => {
-          this.allContactList = response.data.items
-        })
-
-      },
-      handleSelectConName(item){
-        this.followForm.contactID = item.contactID;
+        this.contactForm.customerID = item.customerID;
       },
       handleDownload() {
         /*导出数据到excel表格*/
         this.downloadLoading = true
-        this.export2Excel(this.list, 'thePageFollow')
+        this.export2Excel(this.list, 'thePageContact')
         this.downloadLoading = false
       },
       handleDownloadAll() {
         /*导出数据到excel表格*/
         this.downloadAllLoading = true
-        this.$store.dispatch('follow/getAllFollow', this.pageQueryDTO).then(response => {
-          this.allFollowList = response.data
-          this.export2Excel(this.allFollowList, 'allFollow')
+        this.$store.dispatch('contact/getAllContact', this.pageQueryDTO).then(response => {
+          this.allCustomerList = response.data
+          this.export2Excel(this.allCustomerList, 'Contact')
           this.downloadAllLoading = false
         })
       },
       export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['跟进编号', '客户名称', '跟进内容', '跟进时间', '跟进方式', '客户编号','联系人姓名','联系人职位','手机号']
-          const filterVal = ['followID', 'customerName', 'followContent', 'followDate', 'followType', 'customerID','contactName','contactPosition','contactPhone']
+          const tHeader = ['联系人编号', '客户名称', '联系人职位','联系人姓名','性别', '手机号', 'QQ', '邮箱', '客户编号']
+          const filterVal = ['contactID', 'customerName', 'contactPosition', 'contactName', 'contactSex', 'contactPhone', 'contactQQ','contactEmail','customerID']
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填
@@ -367,33 +364,35 @@
       },
       handleDelete(row) {
         /*删除数据*/
-        this.$store.dispatch('follow/deleteFollow', row.followID).then(response => {
+        this.$store.dispatch('contact/deleteContact', row.contactID).then(response => {
           this.fetchData()
         })
       },
       handleCreate() {
         /*打开新增数据窗口*/
-        this.resetFollowForm()
+        this.resetContactForm()
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['followForm'].clearValidate()
+          this.$refs['contactForm'].clearValidate()
         })
       },
       handleUpdate(row) {
         /*打开编辑数据窗口*/
-        this.followForm = Object.assign({}, row) // copy obj
+        this.contactForm = Object.assign({}, row) // copy obj
         this.dialogStatus = 'update'
+        //数字转为字符串型
+        this.contactForm.contactSex=this.contactForm.contactSex+""
         this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['followForm'].clearValidate()
+          this.$refs['contactForm'].clearValidate()
         })
       },
       createData() {
         /*发送新增数据*/
-        this.$refs.followForm.validate((valid) => {
+        this.$refs.contactForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('follow/addFollow', this.followForm).then(response => {
+            this.$store.dispatch('contact/addContact', this.contactForm).then(response => {
               if (response.data == "succeed") {
                 this.dialogFormVisible = false
                 this.fetchData()
@@ -404,9 +403,9 @@
       },
       updateData() {
         /*发送修改数据*/
-        this.$refs.followForm.validate((valid) => {
+        this.$refs.contactForm.validate((valid) => {
           if (valid) {
-            this.$store.dispatch('follow/updateFollow', this.followForm).then(response => {
+            this.$store.dispatch('contact/updateContact', this.contactForm).then(response => {
               this.dialogFormVisible = false
               this.fetchData()
             })
@@ -416,24 +415,26 @@
       handleFilter() {
         this.pageQueryDTO.columnsName = []
         this.pageQueryDTO.columnsValue = []
-        if (this.queryItems.selectValue != '' || this.queryItems.selectType != '' || this.queryItems.selectStatus != '') {
+        if (this.queryItems.selectValue != '' ) {
           /*查询条件数据装配*/
-          this.pageQueryDTO.columnsName = [this.queryItems.selectKey, "followType"]
-          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectType]
+          this.pageQueryDTO.columnsName = [this.queryItems.selectKey]
+          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue]
         }
         this.fetchData();
       },
-      resetFollowForm() {
+      resetContactForm() {
         /*表单数据清空*/
-        this.followForm = {
+        this.contactForm = {
           customerID: "",
-          followID: "",
+          contactID: "",
           customerName: "",
-          followContent: "",
-          followDate: "",
-          followType: "",
-          contactID:"",
-          contactName:""
+          contactName: "",
+          contactPosition: "",
+          contactSex: "",
+          contactPhone: "",
+          contactQQ: "",
+          contactEmail: "",
+          contactDate: ""
         }
       }
     }

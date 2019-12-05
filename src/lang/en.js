@@ -1,5 +1,5 @@
 export default {
-  serialNumber:"SerialNumber",
+  serialNumber:"No",
   langselect:{
     success:'Switch Language Success'
   },
@@ -12,6 +12,7 @@ export default {
     cusUrl:"Url",
     cusType:"Type",
     cusStatus:"Status",
+    date:"Date",
     create:"Create",
     update:"Update",
     pleaseSelect:"Please select"
@@ -25,6 +26,7 @@ export default {
     phone:"Phone",
     qq:"QQ",
     email:"Email",
+    date:"Date",
     cusID:"CustomerID"
   },
   follow:{

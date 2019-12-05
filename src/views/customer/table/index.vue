@@ -53,11 +53,11 @@
           {{ scope.$index+1}}
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('customer.cusID')" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.customerID }}
-        </template>
-      </el-table-column>
+      <!--<el-table-column align="center" :label="$t('customer.cusID')" width="80">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.customerID }}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column :label="$t('customer.cusName')" width="190">
         <template slot-scope="scope">
           {{ scope.row.customerName|nameEllipsis}}
@@ -89,6 +89,11 @@
       <el-table-column :label="$t('customer.cusStatus')" width="80" align="center">
         <template slot-scope="scope">
           {{ statusList[scope.row.customerStatus-1].text}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('customer.date')" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.customerDate}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center"  width="300"  class-name="small-padding fixed-width">
@@ -143,6 +148,14 @@
                        :value="item.value"/>
           </el-select>
         </el-form-item>
+        <el-form-item :label="$t('customer.date')">
+          <el-date-picker
+            v-model="customerForm.customerDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -183,13 +196,6 @@
         if (!value) return ''
         if (value.length > 12) {
           return value.slice(0, 12) + '...'
-        }
-        return value
-      },
-      urlEllipsis(value) {
-        if (!value) return ''
-        if (value.length > 24) {
-          return value.slice(0, 24) + '...'
         }
         return value
       }
@@ -237,7 +243,8 @@
           customerAddress: "",
           customerUrl: "",
           customerType: "",
-          customerStatus: ""
+          customerStatus: "",
+          customerDate:""
         },
         customerSelectOptions: [
           {key: "客户编号", value: "customerID"},
@@ -282,6 +289,8 @@
     },
     methods: {
       fetchData() {
+        this.pageQueryDTO.columnsName = []
+        this.pageQueryDTO.columnsValue = []
         /*从后台获取数据*/
         this.listLoading = true
         this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
@@ -339,7 +348,7 @@
       },
       handleDelete(row) {
         /*删除数据*/
-        this.$store.dispatch('customer/deleteCustomer', row.cusId).then(response => {
+        this.$store.dispatch('customer/deleteCustomer', row.customerID).then(response => {
           this.fetchData()
         })
       },
@@ -412,7 +421,8 @@
           customerAddress: "",
           customerUrl: "",
           customerType: "",
-          customerStatus: ""
+          customerStatus: "",
+          customerDate:""
         }
       }
     }
