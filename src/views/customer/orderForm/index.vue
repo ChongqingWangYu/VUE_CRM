@@ -106,7 +106,7 @@
                 @pagination="fetchData"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="orderForm" :rules="followRules" :model="orderForm" label-width="100px"
+      <el-form ref="orderForm" :rules="followRules" :model="orderForm" label-width="150px"
                style="width: 400px; margin-left:150px;">
 
         <!--<el-form-item :label="$t('order.ordID')" prop="customerID">-->
@@ -133,7 +133,7 @@
           ></el-autocomplete>
         </el-form-item>
 
-        <el-form-item :label="$t('order.date')">
+        <el-form-item :label="$t('order.date')" prop="orderDate">
           <el-date-picker
             v-model="orderForm.orderDate"
             value-format="yyyy-MM-dd"
@@ -141,10 +141,10 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('order.ordName')" prop="ordName">
+        <el-form-item :label="$t('order.ordName')" prop="orderName">
           <el-input v-model="orderForm.orderName"/>
         </el-form-item>
-        <el-form-item :label="$t('order.amount')" prop="ordAmount">
+        <el-form-item :label="$t('order.amount')" prop="orderAmount">
           <el-input v-model="orderForm.orderAmount"/>
         </el-form-item>
         <el-form-item :label="$t('order.note')">
@@ -172,9 +172,9 @@
     components: {Pagination, UploadExcelComponent},
     directives: {waves},
     data() {
-      const validateFollowContent = (rule, value, callback) => {
+      const validateOrderName = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('跟进内容不能为空'))
+          callback(new Error('订单名称不能为空'))
         }
         else {
           callback()
@@ -191,6 +191,22 @@
       const validateConID = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请从下拉列表中选择联系人名称'))
+        }
+        else {
+          callback()
+        }
+      };
+      const validateDate = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('日期不能为空'))
+        }
+        else {
+          callback()
+        }
+      };
+      const validateNumber = (rule, value, callback) => {
+        if (isNaN(value)) {
+          callback(new Error('金额必须为数字'))
         }
         else {
           callback()
@@ -216,12 +232,12 @@
           contactPosition: ""
         },
         followSelectOptions: [
-          {key: "跟进编号", value: "followID"},
+          {key: "订单编号", value: "orderID"},
           {key: "客户名称", value: "customerName"},
           {key: "跟进内容", value: "followContent"},
           {key: "跟进时间", value: "followDate"},
           {key: "跟进方式", value: "followType"},
-          {key: "客户编号", value: "customerID"},
+          {key: "客户编号", value: "orderForm.customerID"},
           {key: "联系人姓名", value: "contactName"},
           {key: "联系人职位", value: "contactPosition"},
           {key: "手机号", value: "contactPhone"}
@@ -229,7 +245,9 @@
         followRules: {
           customerID: [{required: true, trigger: 'change', validator: validateCusID}],
           contactID: [{required: true, trigger: 'change', validator: validateConID}],
-          followContent: [{required: true, trigger: 'change', validator: validateFollowContent}]
+          orderDate: [{required: true, trigger: 'change', validator: validateDate}],
+          orderName: [{required: true, trigger: 'change', validator: validateOrderName}],
+          orderAmount: [{required: true, trigger: 'change', validator: validateNumber}]
         },
         list: null,
         allCustomerList: null,
@@ -261,14 +279,14 @@
     },
     methods: {
       fetchData() {
-        this.pageQueryDTO.columnsName = []
-        this.pageQueryDTO.columnsValue = []
         /*从后台获取数据*/
         this.listLoading = true
         this.$store.dispatch('order/findPageOrder', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
+          this.pageQueryDTO.columnsName = []
+          this.pageQueryDTO.columnsValue = []
         })
       },
       findOrderByCusID(cusID) {
@@ -300,8 +318,8 @@
         };
       },
       handleSelectCusName(item) {
-        this.allContactList =[]
-          //设置跟进公司的ID
+        this.allContactList = []
+        //设置跟进公司的ID
         this.orderForm.customerID = item.customerID;
         this.orderForm.contactName = "";
         this.orderForm.contactID = "";

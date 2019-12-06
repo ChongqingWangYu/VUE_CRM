@@ -147,7 +147,7 @@
         <el-form-item :label="$t('contact.email')">
           <el-input v-model="contactForm.contactEmail"/>
         </el-form-item>
-        <el-form-item :label="$t('contact.date')">
+        <el-form-item :label="$t('contact.date')" prop="contactDate">
           <el-date-picker
             v-model="contactForm.contactDate"
             value-format="yyyy-MM-dd"
@@ -217,6 +217,14 @@
           callback()
         }
       };
+      const validateDate = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('日期不能为空'))
+        }
+        else {
+          callback()
+        }
+      };
       return {
         dialogFormVisible: false,
         dialogStatus: '',
@@ -237,7 +245,7 @@
           contactDate:""
         },
         customerSelectOptions: [
-          {key: "客户编号", value: "customerID"},
+          {key: "客户编号", value: "contact.customerID"},
           {key: "客户名称", value: "customerName"},
           {key: "联系人编号", value: "contactID"},
           {key: "联系人姓名", value: "contactName"},
@@ -249,6 +257,7 @@
           customerID: [{required: true, trigger: 'change', validator: validateConName}],
           customerName: [{required: true, trigger: 'change', validator: validateCusName}],
           contactName: [{required: true, trigger: 'change', validator: validateConName}],
+          contactDate: [{required: true, trigger: 'change', validator: validateDate}],
           contactPosition: [{required: true, trigger: 'change', validator: validateConPoistion}],
         },
         list: null,
@@ -284,14 +293,14 @@
     },
     methods: {
       fetchData() {
-        this.pageQueryDTO.columnsName = []
-        this.pageQueryDTO.columnsValue = []
         /*从后台获取数据*/
         this.listLoading = true
         this.$store.dispatch('contact/findPageContact', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
+          this.pageQueryDTO.columnsName = []
+          this.pageQueryDTO.columnsValue = []
         })
       },
       findContactByCusID(cusID) {
@@ -332,8 +341,8 @@
       },
       export2Excel(list, excleName) {
         import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['联系人编号', '客户名称', '联系人职位','联系人姓名','性别', '手机号', 'QQ', '邮箱', '客户编号']
-          const filterVal = ['contactID', 'customerName', 'contactPosition', 'contactName', 'contactSex', 'contactPhone', 'contactQQ','contactEmail','customerID']
+          const tHeader = ['联系人编号', '客户名称', '联系人职位','联系人姓名','性别', '手机号', 'QQ', '邮箱', '客户编号','录入时间']
+          const filterVal = ['contactID', 'customerName', 'contactPosition', 'contactName', 'contactSex', 'contactPhone', 'contactQQ','contactEmail','customerID','contactDate']
           const data = this.formatJson(filterVal, list)
           excel.export_json_to_excel({
             header: tHeader, //表头 必填

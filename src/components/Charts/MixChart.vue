@@ -100,7 +100,9 @@
             textStyle: {
               color: '#90979c'
             },
-            data: ['新增客户', '新增联系人', '跟进数量', '订单金额']
+            data: [
+              // '新增客户', '新增联系人', '跟进数量',
+              '订单金额']
           },
           calculable: true,
           xAxis: [{
@@ -173,67 +175,67 @@
             }],
 
           series: [
-            {
-              name: '新增客户',
-              type: 'bar',
-              stack: 'total',
-              barMaxWidth: 35,
-              barGap: '10%',
-              itemStyle: {
-                normal: {
-                  color: 'rgba(0,191,183,1)',
-                  label: {
-                    show: true,
-                    textStyle: {
-                      color: '#fff'
-                    },
-                    position: 'insideTop',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : ''
-                    }
-                  }
-                }
-              },
-              data: this.chartData[0]
-            },
-            {
-              name: '新增联系人',
-              type: 'bar',
-              stack: 'total',
-              itemStyle: {
-                normal: {
-                  color: 'rgba(255,144,128,1)',
-                  barBorderRadius: 0,
-                  label: {
-                    show: true,
-                    position: 'right',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : ''
-                    }
-                  }
-                }
-              },
-              data: this.chartData[1]
-            },
-            {
-              name: '跟进数量',
-              type: 'bar',
-              stack: 'total',
-              itemStyle: {
-                normal: {
-                  color: 'rgba(144,255,138,1)',
-                  barBorderRadius: 0,
-                  label: {
-                    show: true,
-                    position: 'left',
-                    formatter(p) {
-                      return p.value > 0 ? p.value : ''
-                    }
-                  }
-                }
-              },
-              data: this.chartData[2]
-            },
+            // {
+            //   name: '新增客户',
+            //   type: 'bar',
+            //   stack: 'total',
+            //   barMaxWidth: 35,
+            //   barGap: '10%',
+            //   itemStyle: {
+            //     normal: {
+            //       color: 'rgba(0,191,183,1)',
+            //       label: {
+            //         show: false,
+            //         textStyle: {
+            //           color: '#fff'
+            //         },
+            //         position: 'insideTop',
+            //         formatter(p) {
+            //           return p.value > 0 ? p.value : ''
+            //         }
+            //       }
+            //     }
+            //   },
+            //   data: this.chartData[0]
+            // },
+            // {
+            //   name: '新增联系人',
+            //   type: 'bar',
+            //   stack: 'total',
+            //   itemStyle: {
+            //     normal: {
+            //       color: 'rgba(255,144,128,1)',
+            //       barBorderRadius: 0,
+            //       label: {
+            //         show: false,
+            //         position: 'right',
+            //         formatter(p) {
+            //           return p.value > 0 ? p.value : ''
+            //         }
+            //       }
+            //     }
+            //   },
+            //   data: this.chartData[1]
+            // },
+            // {
+            //   name: '跟进数量',
+            //   type: 'bar',
+            //   stack: 'total',
+            //   itemStyle: {
+            //     normal: {
+            //       color: 'rgba(144,255,138,1)',
+            //       barBorderRadius: 0,
+            //       label: {
+            //         show: false,
+            //         position: 'left',
+            //         formatter(p) {
+            //           return p.value > 0 ? p.value : ''
+            //         }
+            //       }
+            //     }
+            //   },
+            //   data: this.chartData[2]
+            // },
             {
               name: '订单金额',
               type: 'line',
@@ -248,7 +250,7 @@
                     show: true,
                     position: 'top',
                     formatter(p) {
-                      return p.value > 0 ? p.value : ''
+                      return p.value > 10000 ? p.value/10000+'万' : p.value
                     }
                   }
                 }

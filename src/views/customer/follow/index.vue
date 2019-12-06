@@ -134,7 +134,7 @@
         <el-form-item :label="$t('follow.content')" prop="followContent">
           <el-input v-model="followForm.followContent"/>
         </el-form-item>
-        <el-form-item :label="$t('follow.date')">
+        <el-form-item :label="$t('follow.date')" prop="followDate">
           <el-date-picker
             v-model="followForm.followDate"
             value-format="yyyy-MM-dd"
@@ -194,6 +194,14 @@
           callback()
         }
       };
+      const validateDate = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('日期不能为空'))
+        }
+        else {
+          callback()
+        }
+      };
       return {
         cusNameList: [{value: "cq"}, {value: "wq"}, {value: "db"}],
         typeList: [
@@ -220,12 +228,11 @@
           contactName:""
         },
         followSelectOptions: [
-          {key: "跟进编号", value: "followID"},
+          {key: "跟进编号", value: "follow.followID"},
           {key: "客户名称", value: "customerName"},
           {key: "跟进内容", value: "followContent"},
           {key: "跟进时间", value: "followDate"},
-          {key: "跟进方式", value: "followType"},
-          {key: "客户编号", value: "customerID"},
+          {key: "客户编号", value: "follow.customerID"},
           {key: "联系人姓名", value: "contactName"},
           {key: "联系人职位", value: "contactPosition"},
           {key: "手机号", value: "contactPhone"}
@@ -233,6 +240,7 @@
         followRules: {
           customerID: [{required: true, trigger: 'change', validator: validateCusID}],
           contactID: [{required: true, trigger: 'change', validator: validateConID}],
+          followDate: [{required: true, trigger: 'change', validator: validateDate}],
           followContent: [{required: true, trigger: 'change', validator: validateFollowContent}]
         },
         list: null,
@@ -271,14 +279,14 @@
     },
     methods: {
       fetchData() {
-        this.pageQueryDTO.columnsName = []
-        this.pageQueryDTO.columnsValue = []
         /*从后台获取数据*/
         this.listLoading = true
         this.$store.dispatch('follow/findPageFollow', this.pageQueryDTO).then(response => {
           this.list = response.data.items
           this.total = response.data.total
           this.listLoading = false
+          this.pageQueryDTO.columnsName = []
+          this.pageQueryDTO.columnsValue = []
         })
       },
       findFollowByCusID(cusID) {

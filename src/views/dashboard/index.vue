@@ -7,24 +7,24 @@
       <line-chart :chart-data="lineChartData" />
     </el-row>
 
-    <pan-thumb :image="image"/>
-    <div class="dashboard-text">{{ name }}</div>
-    <el-button type="primary" icon="upload" style="position: absolute;margin-top: 15px;margin-left: 10px;"
-               @click="imagecropperShow=true">
-      {{ $t('route.avatarUpload') }}
-    </el-button>
-    <!--url="http://39.108.252.228/SSM_CRM/user/uploadImage"-->
-    <!--url="http://127.0.0.1:8080/user/uploadImage"-->
-    <image-cropper
-      v-show="imagecropperShow"
-      :key="imagecropperKey"
-      :width="300"
-      :height="300"
-      url="http://127.0.0.1:8080/user/uploadImage"
-      lang-type="en"
-      @close="close"
-      @crop-upload-success="cropSuccess"
-    />
+    <!--<pan-thumb :image="image"/>-->
+    <!--<div class="dashboard-text">{{ name }}</div>-->
+    <!--<el-button type="primary" icon="upload" style="position: absolute;margin-top: 15px;margin-left: 10px;"-->
+               <!--@click="imagecropperShow=true">-->
+      <!--{{ $t('route.avatarUpload') }}-->
+    <!--</el-button>-->
+    <!--&lt;!&ndash;url="http://39.108.252.228/SSM_CRM/user/uploadImage"&ndash;&gt;-->
+    <!--&lt;!&ndash;url="http://127.0.0.1:8080/user/uploadImage"&ndash;&gt;-->
+    <!--<image-cropper-->
+      <!--v-show="imagecropperShow"-->
+      <!--:key="imagecropperKey"-->
+      <!--:width="300"-->
+      <!--:height="300"-->
+      <!--url="http://127.0.0.1:8080/user/uploadImage"-->
+      <!--lang-type="en"-->
+      <!--@close="close"-->
+      <!--@crop-upload-success="cropSuccess"-->
+    <!--/>-->
   </div>
 </template>
 

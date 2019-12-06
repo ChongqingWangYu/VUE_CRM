@@ -42,10 +42,16 @@ const actions = {
     json = qs.stringify(json)
     return new Promise((resolve, reject) => {
       deleteContact(json).then(response => {
-        if (response.message != "删除失败") {
-          Msg.success(response.message);
-        } else {
-          Msg.error(response.message);
+        switch (response.message) {
+          case "删除成功":
+            Msg.success(response.message);
+            break;
+          case "删除失败":
+            Msg.error(response.message);
+            break;
+          default:
+            Msg.warn(response.message)
+            break;
         }
         resolve();
       }).catch(error => {
