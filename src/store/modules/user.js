@@ -32,7 +32,7 @@ const actions = {
         console.log(response)
         commit('SET_TOKEN', response.token);
         setToken(response.token);
-        resolve();
+        resolve(response);
       }).catch(error => {
         console.log(error);
         reject(error);

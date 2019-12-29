@@ -27,7 +27,6 @@
                  @click="handleDownloadAll">
         {{ $t('excel.exportAll') }}
       </el-button>
-
     </div>
 
     <!--<el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">-->
@@ -59,6 +58,16 @@
           </router-link>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('contact.conName')" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.contactName}}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('contact.conPosition')" width="100" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.contactPosition}}
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('follow.content')" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.followContent}}
@@ -72,16 +81,6 @@
       <el-table-column :label="$t('follow.type')" width="200" align="center">
         <template slot-scope="scope">
           {{ typeList[scope.row.followType-1].text}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('contact.conName')" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.contactName}}
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('contact.conPosition')" width="100" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.contactPosition}}
         </template>
       </el-table-column>
       <el-table-column :label="$t('contact.phone')"  width="120" align="center">
@@ -132,7 +131,7 @@
         </el-form-item>
 
         <el-form-item :label="$t('follow.content')" prop="followContent">
-          <el-input v-model="followForm.followContent"/>
+          <el-input type="textarea" :rows="2" v-model="followForm.followContent"/>
         </el-form-item>
         <el-form-item :label="$t('follow.date')" prop="followDate">
           <el-date-picker
@@ -214,8 +213,8 @@
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
-          update: this.$t('customer.update'),
-          create: this.$t('customer.create')
+          update: this.$t('follow.update'),
+          create: this.$t('follow.create')
         },
         followForm: {
           customerID: "",
@@ -324,6 +323,8 @@
           if (response.data.total != 0) {
             this.allContactList = response.data.items
           }
+          this.pageQueryDTO.columnsName = []
+          this.pageQueryDTO.columnsValue = []
         })
 
       },

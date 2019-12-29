@@ -57,8 +57,8 @@ service.interceptors.response.use(
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         console.log(res.code)
         // to re-login
-        MessageBox.confirm('您已经注销，您可以取消以停留在此页面，或再次登录', '确认注销', {
-          confirmButtonText: '重新登入',
+        MessageBox.confirm('身份认证失败，请重新登录。', '认证失败', {
+          confirmButtonText: '重新登录',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {

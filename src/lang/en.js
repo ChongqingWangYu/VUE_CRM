@@ -6,7 +6,7 @@ export default {
   customer:{
     title:"Customer",
     cusID:"ID",
-    cusName:"Name",
+    cusName:"CustomerName",
     cusPhone:"Phone",
     cusAddr:"Addr",
     cusUrl:"Url",
@@ -21,12 +21,14 @@ export default {
     conID:"ContactID",
     cusName:"CustomerName",
     conPosition:"Position",
-    conName:"ContactName",
+    conName:"Name",
     sex:"Sex",
     phone:"Phone",
     qq:"QQ",
     email:"Email",
     date:"Date",
+    create:"Create",
+    update:"Update",
     cusID:"CustomerID"
   },
   follow:{
@@ -35,6 +37,8 @@ export default {
     content:"Content",
     date:"Date",
     type:"Type",
+    create:"Create",
+    update:"Update",
     cusID:"CustomerID"
   },
   order:{
@@ -42,6 +46,8 @@ export default {
     ordName:"Name",
     date:"Date",
     amount:"Amount",
+    create:"Create",
+    update:"Update",
     note:"Note",
   },
   route: {

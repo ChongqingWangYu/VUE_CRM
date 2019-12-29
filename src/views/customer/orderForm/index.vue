@@ -142,7 +142,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('order.ordName')" prop="orderName">
-          <el-input v-model="orderForm.orderName"/>
+          <el-input type="textarea" :rows="2" v-model="orderForm.orderName"/>
         </el-form-item>
         <el-form-item :label="$t('order.amount')" prop="orderAmount">
           <el-input v-model="orderForm.orderAmount"/>
@@ -216,8 +216,8 @@
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
-          update: this.$t('customer.update'),
-          create: this.$t('customer.create')
+          update: this.$t('order.update'),
+          create: this.$t('order.create')
         },
         orderForm: {
           customerID: "",
@@ -330,6 +330,8 @@
           if (response.data.total != 0) {
             this.allContactList = response.data.items
           }
+          this.pageQueryDTO.columnsName = []
+          this.pageQueryDTO.columnsValue = []
         })
 
       },

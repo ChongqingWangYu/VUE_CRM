@@ -28,6 +28,8 @@ export default {
     qq:"QQ",
     email:"邮箱",
     date:"录入时间",
+    create:"新增联系人信息",
+    update:"更新联系人信息",
     cusID:"客户编号"
   },
   follow:{
@@ -36,6 +38,8 @@ export default {
     content:"跟进内容",
     date: '跟进时间',
     type:"跟进方式",
+    create:"新增跟进信息",
+    update:"更新跟进信息",
     cusID:"客户编号"
   },
   order:{
@@ -43,6 +47,8 @@ export default {
     ordName:"订单名称",
     date:"订单时间",
     amount:"订单金额",
+    create:"新增订单信息",
+    update:"更新订单信息",
     note:"订单备注",
   },
   route: {

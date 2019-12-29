@@ -115,9 +115,9 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="contactForm" :rules="contactRules" :model="contactForm" label-width="100px"
                style="width: 400px; margin-left:150px;">
-        <el-form-item :label="$t('customer.cusID')" prop="customerID">
-          <el-input :disabled="true" v-model="contactForm.customerID"/>
-        </el-form-item>
+        <!--<el-form-item :label="$t('customer.cusID')" prop="customerID">-->
+          <!--<el-input :disabled="true" v-model="contactForm.customerID"/>-->
+        <!--</el-form-item>-->
         <el-form-item :label="$t('contact.conName')" prop="contactName">
           <el-input v-model="contactForm.contactName"/>
         </el-form-item>
@@ -229,8 +229,8 @@
         dialogFormVisible: false,
         dialogStatus: '',
         textMap: {
-          update: this.$t('customer.update'),
-          create: this.$t('customer.create')
+          update: this.$t('contact.update'),
+          create: this.$t('contact.create')
         },
         contactForm: {
           customerID: "",
