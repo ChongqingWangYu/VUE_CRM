@@ -234,9 +234,9 @@
         followSelectOptions: [
           {key: "订单编号", value: "orderID"},
           {key: "客户名称", value: "customerName"},
-          {key: "跟进内容", value: "followContent"},
-          {key: "跟进时间", value: "followDate"},
-          {key: "跟进方式", value: "followType"},
+          {key: "订单名称", value: "orderName"},
+          {key: "订单时间", value: "orderDate"},
+          {key: "订单备注", value: "orderNote"},
           {key: "客户编号", value: "orderForm.customerID"},
           {key: "联系人姓名", value: "contactName"},
           {key: "联系人职位", value: "contactPosition"},

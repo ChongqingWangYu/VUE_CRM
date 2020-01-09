@@ -180,8 +180,8 @@
     filters: {
       addrEllipsis(value) {
         if (!value) return ''
-        if (value.length > 16) {
-          return value.slice(0, 16) + '...'
+        if (value.length > 13) {
+          return value.slice(0, 13) + '...'
         }
         return value
       },
@@ -194,8 +194,8 @@
       },
       phoneEllipsis(value) {
         if (!value) return ''
-        if (value.length > 12) {
-          return value.slice(0, 12) + '...'
+        if (value.length > 10) {
+          return value.slice(0, 10) + '...'
         }
         return value
       }

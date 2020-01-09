@@ -251,6 +251,7 @@
           {key: "联系人姓名", value: "contactName"},
           {key: "QQ号", value: "contactQQ"},
           {key: "邮箱", value: "contactEmail"},
+          {key: "录入时间", value: "contactDate"},
           {key: "手机号", value: "contactPhone"}
         ],
         contactRules: {
@@ -335,7 +336,7 @@
         this.downloadAllLoading = true
         this.$store.dispatch('contact/getAllContact', this.pageQueryDTO).then(response => {
           this.allCustomerList = response.data
-          this.export2Excel(this.allCustomerList, 'Contact')
+          this.export2Excel(this.allCustomerList, 'AllContact')
           this.downloadAllLoading = false
         })
       },
