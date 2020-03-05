@@ -93,10 +93,10 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/customer',
+    path: '/analyze',
     component: Layout,
-    redirect: '/customer/table',
-    name: 'Customer',
+    redirect: '/analyze/MixChart',
+    name: 'Analyze',
     meta: { title: '商业分析', icon: 'user' },
     children: [
       {

@@ -70,7 +70,7 @@
       </el-table-column>
       <el-table-column :label="$t('customer.cusAddr')" align="center">
         <template slot-scope="scope">
-          <a :href="baiduMap+scope.row.customerAddress" target="_blank">
+          <a @click="handleMap(scope.row.customerAddress)">
             {{ scope.row.customerAddress|addrEllipsis }}
           </a>
         </template>
@@ -396,6 +396,10 @@
         this.$nextTick(() => {
           this.$refs['customerForm'].clearValidate()
         })
+      },
+      handleMap(customerAddress) {
+        /*查询联系人*/
+        this.$router.push({path: '/analyze/CustomerMap', query: {addr: customerAddress}});
       },
       handleContact(row) {
         /*查询联系人*/

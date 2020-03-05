@@ -26,7 +26,7 @@
         </el-input>
       </bm-auto-complete>
     </bm-control>
-    <bm-local-search :keyword="keyword" :auto-viewport="true" ></bm-local-search>
+    <bm-local-search  selectFirstResult="true" panel="false" :pageCapacity="1" :keyword="keyword" :auto-viewport="true" ></bm-local-search>
   </baidu-map>
 </template>
 
@@ -37,6 +37,11 @@
         center: {lng: 0, lat: 0},
         zoom: 3,
         keyword: ''
+      }
+    },
+    created() {
+      if(this.$route.query.addr!=null){
+        this.keyword=this.$route.query.addr
       }
     },
     methods: {
