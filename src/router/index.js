@@ -89,12 +89,27 @@ export const constantRoutes = [
         name: 'Order',
         component: () => import('@/views/customer/orderForm/index'),
         meta: { title: '订单列表', icon: 'form' }
-      },
+      }
+    ]
+  },
+  {
+    path: '/customer',
+    component: Layout,
+    redirect: '/customer/table',
+    name: 'Customer',
+    meta: { title: '商业分析', icon: 'user' },
+    children: [
       {
         path: 'MixChart',
         name: 'MixChart',
-        component: () => import('@/views/customer/charts/mix-chart'),
-        meta: { title: '图表', icon: 'chart' }
+        component: () => import('@/views/analyze/charts/mix-chart'),
+        meta: { title: '业绩图表', icon: 'chart' }
+      },
+      {
+        path: 'CustomerMap',
+        name: 'MixChart',
+        component: () => import('@/views/analyze/bmap/customerMap'),
+        meta: { title: '客户地图', icon: 'chart' }
       }
     ]
   },

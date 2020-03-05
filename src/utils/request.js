@@ -6,7 +6,7 @@ import {getToken} from '@/utils/auth'
 const service = axios.create({
   headers: {'content-type': 'application/x-www-form-urlencoded'},
   // baseURL: `http://chongqingwangyu.xyz/SSM_CRM`, // url = base url + request url
-  baseURL: `http://127.0.0.1:8080`, // url = base url + request url
+  baseURL: `http://127.0.0.1:8088`, // url = base url + request url
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 15000// request timeout
