@@ -4,7 +4,8 @@ import {
   findPageCustomer,
   getAllCustomer,
   updateCustomer,
-  uploadExcel
+  uploadExcel,
+  getAllCustomerAddress
 } from '@/api/customer'
 import {Msg} from '@/utils/message'
 import qs from 'qs'
@@ -67,6 +68,17 @@ const actions = {
   getAllCustomer({}) {
     return new Promise((resolve, reject) => {
       getAllCustomer().then(response => {
+        Msg.success(response.message)
+        resolve(response);
+      }).catch(error => {
+        console.log(error);
+        reject(error);
+      })
+    })
+  },
+  getAllCustomerAddress({}) {
+    return new Promise((resolve, reject) => {
+      getAllCustomerAddress().then(response => {
         Msg.success(response.message)
         resolve(response);
       }).catch(error => {

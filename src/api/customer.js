@@ -7,6 +7,14 @@ export function findPageCustomer(data) {
     data
   })
 }
+
+export function getAllCustomerAddress() {
+  return request({
+    url: '/customer/getAllCustomerAddress',
+    method: 'get'
+  })
+}
+
 export function getAllCustomer() {
   return request({
     url: '/customer/getAllCustomer',

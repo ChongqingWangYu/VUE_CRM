@@ -242,7 +242,6 @@
         }
       };
       return {
-        baiduMap: "https://map.baidu.com/search/@12959220,4825334.5,12z?querytype=s&da_src=shareurl&wd=",
         typeList: [
           {text: "有意向", value: 1},
           {text: "无意向 ", value: 2},
