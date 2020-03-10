@@ -1,41 +1,106 @@
 <template>
-  <baidu-map class="bm-view" :style="bmStyle" center="山西" :zoom="zoom" :scroll-wheel-zoom="true" @ready="handlerBMap">
-    <!--定位控件-->
-    <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
-    <!--缩放控件-->
-    <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
-    <!--缩略图-->
-    <bm-overview-map anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :isOpen="true"></bm-overview-map>
-    <!--比例尺-->
-    <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
-    <!--聚合标点-->
-    <bml-marker-clusterer :averageCenter="true">
-      <bm-marker @click="clickHandler" v-for="marker of markers"
-                 :position="{lng: marker.lng, lat: marker.lat}"></bm-marker>
-    </bml-marker-clusterer>
-    <!--海量标点-->
-    <bm-point-collection :points="markers" shape="BMAP_POINT_SHAPE_STAR" color="red" size="BMAP_POINT_SIZE_SMALL"
-                         @click="clickHandler"></bm-point-collection>
-    <!--标点-->
-    <!--<bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">-->
-    <!--<bm-label content="我爱北京天安门"/>-->
-    <!--</bm-marker>-->
-    <!--行政区划分-->
-    <!--<bm-boundary name="重庆" :strokeWeight="2" :fillOpacity=0.05 fillColor="red" strokeColor="black"></bm-boundary>-->
-    <!--搜索框-->
-    <bm-control>
-      <bm-auto-complete v-model="keyword" :sugStyle="{zIndex: 1}">
-        <el-input
-          placeholder="请输入地址"
-          v-model="keyword"
-          clearable>
-        </el-input>
-      </bm-auto-complete>
-    </bm-control>
-    <!--搜索定位-->
-    <bm-local-search :panel="false" :pageCapacity="1" :keyword="keyword"
-                     :auto-viewport="true"></bm-local-search>
-  </baidu-map>
+  <div>
+    <baidu-map class="bm-view" :style="bmStyle" center="山西" :zoom="zoom" :scroll-wheel-zoom="true" @ready="handlerBMap">
+      <!--定位控件-->
+      <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
+      <!--缩放控件-->
+      <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+      <!--缩略图-->
+      <bm-overview-map anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :isOpen="true"></bm-overview-map>
+      <!--比例尺-->
+      <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
+      <!--聚合标点-->
+      <bml-marker-clusterer :averageCenter="true">
+        <bm-marker @click="clickHandler(marker)" v-for="marker of markers"
+                   :position="{lng: marker.lng, lat: marker.lat}"></bm-marker>
+      </bml-marker-clusterer>
+      <!--海量标点-->
+      <bm-point-collection :points="markers" shape="BMAP_POINT_SHAPE_STAR" color="red" size="BMAP_POINT_SIZE_SMALL"
+                           @click="clickHandler"></bm-point-collection>
+      <!--标点-->
+      <!--<bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">-->
+      <!--<bm-label content="我爱北京天安门"/>-->
+      <!--</bm-marker>-->
+      <!--行政区划分-->
+      <!--<bm-boundary name="重庆" :strokeWeight="2" :fillOpacity=0.05 fillColor="red" strokeColor="black"></bm-boundary>-->
+      <!--搜索框-->
+      <bm-control>
+        <!--<bm-auto-complete v-model="keyword" :sugStyle="{zIndex: 1}">-->
+          <el-input
+            placeholder="请输入客户地址"
+            v-model="queryItems.selectValue"
+            @change="handleFilter"
+            style="width: 150px; margin-left: 10px; margin-top: 10px;"
+            clearable>
+          </el-input>
+          <el-select v-model="queryItems.selectType" placeholder="客户类型" clearable class="filter-item"
+                     style="width: 130px"
+                     @change="handleFilter">
+            <el-option v-for="item in typeList" :key="item.value" :label="item.text" :value="item.value"/>
+          </el-select>
+          <el-select v-model="queryItems.selectStatus" placeholder="客户状态" clearable style="width: 140px"
+                     class="filter-item"
+                     @change="handleFilter">
+            <el-option v-for="item in statusList" :key="item.value" :label="item.text" :value="item.value"/>
+          </el-select>
+        <!--</bm-auto-complete>-->
+      </bm-control>
+      <!--搜索定位-->
+      <bm-local-search :panel="false" :selectFirstResult="true" :pageCapacity="1" :keyword="keyword"
+                       :auto-viewport="true"></bm-local-search>
+
+
+    </baidu-map>
+    <el-dialog title="客户信息" :visible.sync="dialogFormVisible">
+      <el-form ref="customerForm" :model="customerForm" label-width="80px"
+               style="width: 400px; margin-left:150px;">
+        <!--<el-form-item :label="$t('customer.cusId')" prop="cusNo">-->
+        <!--<el-input v-model="customerForm.customerID"/>-->
+        <!--</el-form-item>-->
+        <el-form-item :label="$t('customer.cusName')" prop="customerName">
+          <el-input v-model="customerForm.customerName"/>
+        </el-form-item>
+        <el-form-item :label="$t('customer.cusPhone')" prop="customerPhone">
+          <el-input v-model="customerForm.customerPhone"/>
+        </el-form-item>
+        <el-form-item :label="$t('customer.cusAddr')">
+          <el-input v-model="customerForm.customerAddress"/>
+        </el-form-item>
+        <el-form-item :label="$t('customer.cusUrl')">
+          <el-input v-model="customerForm.customerUrl"/>
+        </el-form-item>
+        <el-form-item :label="$t('customer.cusType')" prop="customerType">
+          <el-select v-model="customerForm.customerType" class="filter-item" :placeholder="$t('customer.pleaseSelect')">
+            <el-option v-for="item in typeList" :key="item.value" :label="item.text"
+                       :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('customer.cusStatus')" prop="customerStatus">
+          <el-select v-model="customerForm.customerStatus" class="filter-item"
+                     :placeholder="$t('customer.pleaseSelect')">
+            <el-option v-for="item in statusList" :key="item.value" :label="item.text"
+                       :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('customer.date')" prop="customerDate">
+          <el-date-picker
+            v-model="customerForm.customerDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          {{ $t('permission.cancel') }}
+        </el-button>
+        <el-button type="primary" @click="updateData()">
+          {{ $t('permission.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -45,16 +110,44 @@
     components: {BmScale, BmGeolocation, BmlMarkerClusterer},
     data() {
       return {
-        center: {lng: 0, lat: 0},
         zoom: 5,
-        keyword: '',
+        keyword:"",
         bmStyle: {width: '100%', height: '', marginBottom: '10px'},
         markers: [],
-        markersAddress: [],
-        customerList: ["江苏省南京市文苑路1号", "南京市汉中路140号南京医科大学康达学院"],
-        searchResults: [],
-        arraysChunk: [],
-        count: 0
+        dialogFormVisible: false,
+        pageQueryDTO: {
+          columnsName: [],
+          columnsValue: []
+        },
+        queryItems: {
+          selectKey: '',
+          selectValue: '',
+          selectType: '',
+          selectStatus: ''
+        },
+        customerForm: {
+          customerID: "",
+          customerName: "",
+          customerPhone: "",
+          customerAddress: "",
+          customerUrl: "",
+          customerType: "",
+          customerStatus: "",
+          customerDate: "",
+          lng: "",
+          lat: ""
+        },
+        typeList: [
+          {text: "有意向", value: 1},
+          {text: "无意向 ", value: 2},
+          {text: "已成交", value: 3}
+        ],
+        statusList: [
+          {text: "待商谈", value: 1},
+          {text: "已商谈", value: 2},
+          {text: "待签约", value: 3},
+          {text: "已签约", value: 4}
+        ],
       }
     },
     created() {
@@ -64,92 +157,75 @@
     },
     methods: {
       handlerBMap({BMap, map}) {
-        const that = this
-        const local = new BMap.LocalSearch(map, {
-          onSearchComplete: function (results) {
-            console.log(results)
-            that.count++
-            if (local.getStatus() == BMAP_STATUS_SUCCESS) {
-              console.log(that.count)
-              if (results.length != undefined) {
-                for (let i = 0; i < results.length; i++) {
-                  that.addPoint(results[i])
-                }
-              } else {
-                that.addPoint(results)
-              }
-              // that.searchResults.push(results)
-              // if (that.count == that.arraysChunk.length) {
-              //   that.analysisSearchResults()
-              // }
-            }
-          }
-        })
-        // local.enableFirstResultSelection()
-        // local.search(["四川"])
-        // local.search(["吉林省长春市新城大街2888号"])
-        // local.search(["重庆", "上海"])
         /*从后台获取数据*/
-        this.$store.dispatch('customer/getAllCustomerAddress', this.pageQueryDTO).then(response => {
-          this.markers = response.data
-          // 前端获取地图坐标
-          // this.customerList = response.data
-          // this.arraysChunk = this.chunk(this.customerList, 10)
-          // for (let i = 0; i < this.arraysChunk.length; i++) {
-          //   local.search(this.arraysChunk[i])
-          // }
+        this.listAllCustomer()
+      },
+      updateData() {
+        /*发送修改数据*/
+        this.$refs.customerForm.validate((valid) => {
+          if (valid) {
+            this.$store.dispatch('customer/updateCustomer', this.customerForm).then(response => {
+              this.dialogFormVisible = false
+            })
+          }
         })
       },
       listAllCustomer() {
         /*从后台获取数据*/
         this.$store.dispatch('customer/getAllCustomerAddress', this.pageQueryDTO).then(response => {
-          this.customerList = response.data
+          this.markers = response.data
+          this.pageQueryDTO.columnsName = []
+          this.pageQueryDTO.columnsValue = []
         })
       },
-      addPoint(results) {
-        if (this.markersAddress.indexOf(results.keyword) == -1) {
-          let poi
-          try {
-            poi = results.getPoi(0)
-            this.markersAddress.push(results.keyword)
-            if (poi != undefined)
-              this.markers.push(poi.point)
-          } catch (e) {
-            console.log(results)
-            console.log(poi)
-            console.log(e)
-          }
-        }
+      clickHandler(marker) {
+        // this.keyword = ''
+        console.log('单击点的坐标为：', marker);
+        // this.keyword = e.customerAddress+" "+e.customerName
+        this.pageQueryDTO.columnsName = ["customerID"]
+        this.pageQueryDTO.columnsValue = [marker.customerID]
+        this.$store.dispatch('customer/findPageCustomer', this.pageQueryDTO).then(response => {
+          let e = response.data.items[0]
+          console.log(response)
+          this.dialogFormVisible = true
+          this.customerForm.customerID = e.customerID
+          this.customerForm.customerName = e.customerName
+          this.customerForm.customerAddress = e.customerAddress
+          this.customerForm.customerPhone = e.customerPhone
+          this.customerForm.customerUrl = e.customerUrl
+          this.customerForm.customerType = e.customerType
+          this.customerForm.customerStatus = e.customerStatus
+          this.customerForm.customerDate = e.customerDate
+          this.customerForm.lat = e.lat
+          this.customerForm.lng = e.lng
+        })
       },
-      analysisSearchResults() {
-        let results = this.searchResults
-        if (results.length != undefined) {
-          for (let i = 0; i < results.length; i++) {
-            this.addPoint(results[i])
-          }
-        } else {
-          this.addPoint(results)
+      handleFilter() {
+        if (this.queryItems.selectValue != '' || this.queryItems.selectType != '' || this.queryItems.selectStatus != '') {
+          /*查询条件数据装配*/
+          this.pageQueryDTO.columnsName = ["customerAddress", "customerType", "customerStatus"]
+          this.pageQueryDTO.columnsValue = [this.queryItems.selectValue, this.queryItems.selectType, this.queryItems.selectStatus]
         }
-      },
-      clickHandler(e) {
-        console.log(`单击点的坐标为：${e.point.lng}, ${e.point.lat}`);
+        this.listAllCustomer();
       },
       // 让地图大小自适应屏幕高度方法
       adaptiveHeight() {
         //获取窗口的高度，减去一个定值，你可以自己* 乘以一个小数
         this.bmStyle.height = (window.innerHeight) - 60 + 'px';
       },
-      chunk(arr, size) {
-        var rsArr = [];
-        for (var i = 0; i < arr.length; i += size) {
-          var tempArr = [];
-          for (var j = 0; j < size && i + j < arr.length; j++) {
-            tempArr.push(arr[i + j]);
-          }
-          rsArr.push(tempArr);
+      resetCustomerForm() {
+        /*表单数据清空*/
+        this.customerForm = {
+          customerID: "",
+          customerName: "",
+          customerPhone: "",
+          customerAddress: "",
+          customerUrl: "",
+          customerType: "",
+          customerStatus: "",
+          customerDate: ""
         }
-        return rsArr;
-      }
+      },
     },
     mounted() {
       this.adaptiveHeight()

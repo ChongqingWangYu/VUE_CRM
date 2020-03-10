@@ -8,10 +8,11 @@ export function findPageCustomer(data) {
   })
 }
 
-export function getAllCustomerAddress() {
+export function getAllCustomerAddress(data) {
   return request({
     url: '/customer/getAllCustomerAddress',
-    method: 'get'
+    method: 'post',
+    data
   })
 }
 

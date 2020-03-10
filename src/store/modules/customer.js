@@ -76,9 +76,10 @@ const actions = {
       })
     })
   },
-  getAllCustomerAddress({}) {
+  getAllCustomerAddress({}, pageQueryDTO) {
+    pageQueryDTO = qs.stringify(pageQueryDTO)
     return new Promise((resolve, reject) => {
-      getAllCustomerAddress().then(response => {
+      getAllCustomerAddress(pageQueryDTO).then(response => {
         Msg.success(response.message)
         resolve(response);
       }).catch(error => {
