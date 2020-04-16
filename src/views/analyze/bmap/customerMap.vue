@@ -2,21 +2,21 @@
   <div>
     <baidu-map class="bm-view" :style="bmStyle" center="山西" :zoom="zoom" :scroll-wheel-zoom="true" @ready="handlerBMap">
       <!--定位控件-->
-      <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
+      <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :showAddressBar="true" :autoLocation="true" />
       <!--缩放控件-->
-      <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+      <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"/>
       <!--缩略图-->
-      <bm-overview-map anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :isOpen="true"></bm-overview-map>
+      <bm-overview-map anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :isOpen="true"/>
       <!--比例尺-->
-      <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
+      <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"/>
       <!--聚合标点-->
       <bml-marker-clusterer :averageCenter="true">
         <bm-marker @click="clickHandler(marker)" v-for="marker of markers"
-                   :position="{lng: marker.lng, lat: marker.lat}"></bm-marker>
+                   :position="{lng: marker.lng, lat: marker.lat}"/>
       </bml-marker-clusterer>
       <!--海量标点-->
       <bm-point-collection :points="markers" shape="BMAP_POINT_SHAPE_STAR" color="red" size="BMAP_POINT_SIZE_SMALL"
-                           @click="clickHandler"></bm-point-collection>
+                           @click="clickHandler"/>
       <!--标点-->
       <!--<bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">-->
       <!--<bm-label content="我爱北京天安门"/>-->
@@ -47,8 +47,7 @@
       </bm-control>
       <!--搜索定位-->
       <bm-local-search :panel="false" :selectFirstResult="true" :pageCapacity="1" :keyword="keyword"
-                       :auto-viewport="true"></bm-local-search>
-
+                       :auto-viewport="true"/>
 
     </baidu-map>
     <el-dialog title="客户信息" :visible.sync="dialogFormVisible">
@@ -105,7 +104,6 @@
 
 <script>
   import {BaiduMap, BmScale, BmGeolocation, BmlMarkerClusterer} from 'vue-baidu-map'
-
   export default {
     components: {BmScale, BmGeolocation, BmlMarkerClusterer},
     data() {

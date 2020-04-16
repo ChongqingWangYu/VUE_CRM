@@ -16,7 +16,7 @@ const actions = {
     json = qs.stringify(json)
     return new Promise((resolve, reject) => {
       deleteOrder(json).then(response => {
-        if (response.message != "删除失败") {
+        if (response.message !== "删除失败!") {
           Msg.success(response.message);
         } else {
           Msg.error(response.message);

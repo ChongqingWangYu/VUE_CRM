@@ -83,11 +83,9 @@
       const validateUsername = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入用户名'))
-        }
-        else if (value.length < 6) {
+        } else if (value.length < 6) {
           callback(new Error('用户名必须大于6位'))
-        }
-        else {
+        } else {
           callback()
         }
       };
@@ -143,15 +141,15 @@
         })
       },
       registerSubmit() {
-        var user ={
-          userName:this.registerForm.userName,
-          password:this.registerForm.password
+        var user = {
+          userName: this.registerForm.userName,
+          password: this.registerForm.password
         };
         this.$refs.registerForm.validate(valid => {
           if (valid) {
             this.loading = true;
-            this.$store.dispatch('user/register', user).then( res => {
-              if(res.massage=="注册成功"){
+            this.$store.dispatch('user/register', user).then(response => {
+              if (response.code == 200) {
                 this.$router.push({path: this.redirect || '/'});
               }
               this.loading = false

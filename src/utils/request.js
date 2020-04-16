@@ -44,18 +44,16 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
    response => {
-    console.log(response)
     const res = response.data;
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    // if the custom code is not 200, it is judged as an error.
+    if (res.code !== 200) {
       Message({
         message: res.message || 'Error',
         type: 'error',
         duration: 5 * 1000
       });
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        console.log(res.code)
+      if (res.code === 401) {
         // to re-login
         MessageBox.confirm('身份认证失败，请重新登录。', '认证失败', {
           confirmButtonText: '重新登录',

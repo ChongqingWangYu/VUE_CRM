@@ -114,7 +114,7 @@
           if (valid) {
             this.loading = true;
             this.$store.dispatch('user/login', this.loginForm).then(response => {
-              if (response.code === 20000)
+              if (response.code === 200)
                 this.$router.push({path: this.redirect || '/'});
               this.loading = false
             }).catch((error) => {

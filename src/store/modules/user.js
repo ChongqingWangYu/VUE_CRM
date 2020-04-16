@@ -29,9 +29,10 @@ const actions = {
     user = qs.stringify(user);
     return new Promise((resolve, reject) => {
       login(user).then(response => {
-        console.log(response)
-        commit('SET_TOKEN', response.token);
-        setToken(response.token);
+        const data = response.data
+        console.log("data", data)
+        commit('SET_TOKEN', data.token);
+        setToken(data.token);
         resolve(response);
       }).catch(error => {
         console.log(error);
@@ -44,12 +45,12 @@ const actions = {
     user = qs.stringify(user);
     return new Promise((resolve, reject) => {
       register(user).then(response => {
-        if (response.message == "注册成功") {
-          Msg.success(response.message);
+        if (response.code == 200) {
+          Msg.success(response.data);
         } else {
-          Msg.error(response.message);
+          Msg.error(response.data);
         }
-        resolve();
+        resolve(response);
       }).catch(error => {
         reject(error);
       })
@@ -81,7 +82,7 @@ const actions = {
         commit('SET_TOKEN', '');
         removeToken();
         resetRouter();
-        Msg.success(response.message);
+        Msg.success(response.data);
         resolve();
       }).catch(error => {
         console.log(error);
