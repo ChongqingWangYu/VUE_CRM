@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'ssm_crm_token';
+const TokenKey = 'wy_upms_token';
 
 export function getToken() {
   return Cookies.get(TokenKey)

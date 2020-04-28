@@ -95,7 +95,13 @@
         immediate: true
       }
     },
+    created() {
+      // this.redirection()
+    },
     methods: {
+      redirection(){
+        window.location.href = "http://localhost:9526/#/login?redirect=http://localhost:9528/#/dashboard"
+      },
       showPwd() {
         if (this.passwordType === 'password') {
           this.passwordType = ''

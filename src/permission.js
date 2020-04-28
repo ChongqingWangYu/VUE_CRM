@@ -52,7 +52,8 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
+      // next(`/login?redirect=${to.path}`)
+      window.location.href = "http://localhost:9526/#/login?redirect=http://localhost:9528"
       NProgress.done()
     }
   }
