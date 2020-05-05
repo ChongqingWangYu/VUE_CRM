@@ -58,73 +58,73 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
-  {
-    path: '/customer',
-    component: Layout,
-    redirect: '/customer/table',
-    name: 'Customer',
-    meta: { title: '客户管理', icon: 'user' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/customer/table/index'),
-        meta: { title: '客户列表', icon: 'table' }
-      },
-      {
-        path: 'contact',
-        name: 'Contact',
-        component: () => import('@/views/customer/contact/index'),
-        meta: { title: '联系人列表', icon: 'peoples' }
-      },
-      {
-        path: 'follow',
-        name: 'Follow',
-        component: () => import('@/views/customer/follow/index'),
-        meta: { title: '跟进列表', icon: 'guide' }
-      },
-      {
-        path: 'order',
-        name: 'Order',
-        component: () => import('@/views/customer/orderForm/index'),
-        meta: { title: '订单列表', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/analyze',
-    component: Layout,
-    redirect: '/analyze/MixChart',
-    name: 'Analyze',
-    meta: { title: '商业分析', icon: 'user' },
-    children: [
-      {
-        path: 'MixChart',
-        name: 'MixChart',
-        component: () => import('@/views/analyze/charts/mix-chart'),
-        meta: { title: '业绩图表', icon: 'chart' }
-      },
-      {
-        path: 'CustomerMap',
-        name: 'MixChart',
-        component: () => import('@/views/analyze/bmap/customerMap'),
-        meta: { title: '客户地图', icon: 'chart' }
-      }
-    ]
-  },
-  {
-    path: 'github-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://github.com/ChongqingWangYu',
-        meta: { title: 'GitHub Link', icon: 'link' }
-      }
-    ]
-  },
+  // {
+  //   path: '/customer',
+  //   component: Layout,
+  //   redirect: '/customer/table',
+  //   name: 'Customer',
+  //   meta: { title: '客户管理', icon: 'user' },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/customer/table/index'),
+  //       meta: { title: '客户列表', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'contact',
+  //       name: 'Contact',
+  //       component: () => import('@/views/customer/contact/index'),
+  //       meta: { title: '联系人列表', icon: 'peoples' }
+  //     },
+  //     {
+  //       path: 'follow',
+  //       name: 'Follow',
+  //       component: () => import('@/views/customer/follow/index'),
+  //       meta: { title: '跟进列表', icon: 'guide' }
+  //     },
+  //     {
+  //       path: 'order',
+  //       name: 'Order',
+  //       component: () => import('@/views/customer/orderForm/index'),
+  //       meta: { title: '订单列表', icon: 'form' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/analyze',
+  //   component: Layout,
+  //   redirect: '/analyze/MixChart',
+  //   name: 'Analyze',
+  //   meta: { title: '商业分析', icon: 'user' },
+  //   children: [
+  //     {
+  //       path: 'mixChart',
+  //       name: 'MixChart',
+  //       component: () => import('@/views/analyze/charts/mix-chart'),
+  //       meta: { title: '业绩图表', icon: 'chart' }
+  //     },
+  //     {
+  //       path: 'customerMap',
+  //       name: 'MixChart',
+  //       component: () => import('@/views/analyze/bmap/customerMap'),
+  //       meta: { title: '客户地图', icon: 'chart' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: 'github-link',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'https://github.com/ChongqingWangYu',
+  //       meta: { title: 'GitHub Link', icon: 'link' }
+  //     }
+  //   ]
+  // },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

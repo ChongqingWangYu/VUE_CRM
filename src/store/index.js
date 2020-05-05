@@ -9,6 +9,7 @@ import contact from './modules/contact'
 import follow from './modules/follow'
 import order from './modules/order'
 import charts from './modules/charts'
+import permission from './modules/permission'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ const store = new Vuex.Store({
     contact,
     follow,
     order,
-    charts
+    charts,
+    permission
   },
   getters
 })

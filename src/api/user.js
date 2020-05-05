@@ -29,3 +29,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+// 获取路由
+export const getRouters = () => {
+  return request({
+    url: 'http://localhost:8087/system/getRouters',
+    method: 'get'
+  })
+}
