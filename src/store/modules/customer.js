@@ -80,7 +80,7 @@ const actions = {
     pageQueryDTO = qs.stringify(pageQueryDTO)
     return new Promise((resolve, reject) => {
       getAllCustomerAddress(pageQueryDTO).then(response => {
-        Msg.success(response.message)
+        // Msg.success(response.message)
         resolve(response);
       }).catch(error => {
         console.log(error);

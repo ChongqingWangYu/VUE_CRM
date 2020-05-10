@@ -32,24 +32,24 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          store.dispatch('user/getInfo').then(res => {
-            store.dispatch('GenerateRoutes').then(accessRoutes => {
-              for (let i = 0; i <accessRoutes.length; i++) {
-                router.options.routes.push(accessRoutes[i])
-              }
-              // 测试 默认静态页面
-              // store.dispatch('permission/generateRoutes', { roles }).then(accessRoutes => {
-              // 根据roles权限生成可访问的路由表
-              router.addRoutes(accessRoutes) // 动态添加可访问路由表
-              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
-            })
+          await store.dispatch('user/getInfo')
+          await store.dispatch('GenerateRoutes').then(accessRoutes => {
+            for (let i = 0; i <accessRoutes.length; i++) {
+              router.options.routes.push(accessRoutes[i])
+            }
+            // 测试 默认静态页面
+            // store.dispatch('permission/generateRoutes', { roles }).then(accessRoutes => {
+            // 根据roles权限生成可访问的路由表
+            router.addRoutes(accessRoutes) // 动态添加可访问路由表
+            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
           })
-          // next()
+          next()
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
+          // next(`/login?redirect=${to.path}`)
+          window.location.href = "http://localhost:9526/#/login?redirect=http://localhost:9528"
           NProgress.done()
         }
       }
