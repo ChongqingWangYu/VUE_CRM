@@ -1,4 +1,4 @@
-import {getInfo, login, logout, register} from '@/api/user'
+import {update,getInfo, login, logout, register} from '@/api/user'
 import {getToken, removeToken, setToken} from '@/utils/auth'
 import {resetRouter} from '@/router'
 import qs from 'qs'
@@ -24,6 +24,20 @@ const mutations = {
 }
 
 const actions = {
+  
+  update({}, user) {
+    var  userInfo = qs.stringify(user)
+    return new Promise((resolve, reject) => {
+      update(userInfo).then(response => {
+        Msg.success(response.message)
+        resolve(response)
+      }).catch(error => {
+        console.log(error)
+        reject(error)
+      })
+    })
+  },
+  
   // user login
   login({commit}, user) {
     user = qs.stringify(user);

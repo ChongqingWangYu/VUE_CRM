@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function update(data) {
+  return request({
+    url: 'http://localhost:8085/user/update',
+    method: 'put',
+    data
+  })
+}
+
 export function login(data) {
   return request({
     url: '/user/login',
@@ -34,6 +42,7 @@ export function logout() {
 export const getRouters = () => {
   return request({
     url: 'http://localhost:8087/system/getRouters',
-    method: 'get'
+    method: 'get',
+    params: {sysName:"客户关系管理系统"}
   })
 }
